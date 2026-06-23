@@ -9,18 +9,21 @@ A Flutter app for tracking breastfeeding sessions and baby health data. Designed
 - **Side selection** — choose Left or Right before starting; switching sides mid-session automatically closes the current segment and opens a new one
 - **Daily stats** — total nursing minutes for the day and today's diaper count shown at a glance
 - **Next feed suggestion** — calculates the recommended next feed time based on the last session end time and the configured feed interval
+- **Session history drawer** — tap the Last Nursing card to view today's sessions in a bottom sheet
+- **Manual session entry** — tap + next to the Last Nursing card to log a past session with custom start/end time and side
+- **Short session discard** — sessions under 15 seconds are automatically discarded without saving
 
 ### Stats
 - **Today's summary** — total nursing time formatted as hours and minutes
 - **Lateral balance card** — visual bar showing the left/right time split with percentages and durations
-- **Session history** — list of today's sessions; long-press any entry to edit its end time via a bottom sheet
+- **Session history** — list of today's sessions (up to 4, expandable 3 at a time); long-press any entry to edit start/end time and side via a bottom sheet
 - **Insights** — average session duration and night feed count (midnight–6 AM)
-- **Nursing history chart** — 7-day bar chart of daily nursing minutes overlaid with diaper counts
+- **Nursing history chart** — bar chart of daily nursing minutes overlaid with diaper counts; shows active filter or selected bar label above stats
 - **Weight chart** — line chart of all recorded weight entries
 
 ### Baby
-- **Diaper logging** — three quick-tap buttons (Wet / Dirty / Both) open a sheet with type selection and time picker; entries can be deleted
-- **Weight tracking** — log weight in kg or grams; the latest entry card shows the trend (gain/loss) compared to the previous entry with a color indicator
+- **Diaper logging** — three quick-tap buttons (Wet / Dirty / Both) open a sheet with type selection and time picker; entries can be deleted; time display shows relative (min/hours) or absolute date+time for older entries
+- **Weight tracking** — log weight in kg or grams with a date and time picker (defaults to now); the latest entry card shows the trend (gain/loss) compared to the previous entry with a color indicator
 
 ### Settings
 - **Baby profile** — name, birth date, and a customizable feed interval slider (1–6 h in 30-minute steps); the recommended range is derived automatically from the baby's age

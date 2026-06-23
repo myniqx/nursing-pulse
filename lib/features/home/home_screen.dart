@@ -127,6 +127,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _finishNursing() async {
     _ticker?.cancel();
+    final elapsed = _activeSession != null
+        ? DateTime.now().difference(_activeSession!.startTime)
+        : Duration.zero;
+
+    if (elapsed.inSeconds < 15) {
+      await _repo.discardActiveSession();
+      await NursingSessionService.instance.stop();
+      setState(() => _activeSession = null);
+      return;
+    }
+
     final finished = await _repo.finishActiveSession(DateTime.now());
     final sessions = await _repo.getSessions();
     setState(() {

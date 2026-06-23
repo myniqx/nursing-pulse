@@ -29,6 +29,11 @@ class SessionRepository {
     await prefs.setString(_activeSessionKey, jsonEncode(session.toJson()));
   }
 
+  Future<void> discardActiveSession() async {
+    final prefs = await _prefs;
+    await prefs.remove(_activeSessionKey);
+  }
+
   Future<Session> finishActiveSession(DateTime endTime) async {
     final prefs = await _prefs;
     final active = await getActiveSession();
