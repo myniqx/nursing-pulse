@@ -330,17 +330,19 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
               ],
               if (!isEmpty) ...[
                 const Divider(color: AppColors.surfaceContainerHigh, height: AppSpacing.stackLg * 2),
-                if (_selectedBarIndex != null) ...[
-                  Text(
-                    _cachedBars[_selectedBarIndex!].label,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                  const SizedBox(height: AppSpacing.stackMd),
-                ],
-                Row(
+                Text(
+                  _selectedBarIndex != null
+                      ? _cachedBars[_selectedBarIndex!].label
+                      : _rangeTitle(l10n),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: AppSpacing.stackMd),
+                IntrinsicHeight(
+                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(child: _MiniStatCard(
                       icon: Icons.water_drop_outlined,
@@ -367,6 +369,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                       color: AppColors.secondary,
                     )),
                   ],
+                 ),
                 ),
               ],
             ],
@@ -575,13 +578,19 @@ class _MiniStatCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Icon(icon, color: color, size: 18),
           const SizedBox(height: AppSpacing.stackSm),
-          Text(label,
+          SizedBox(
+            height: 30,
+            child: Text(label,
+              maxLines: 2,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   )),
+          ),
+          const Spacer(),
           const SizedBox(height: 2),
           Text(value,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(

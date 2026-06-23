@@ -44,6 +44,13 @@ class SessionRepository {
     return finished;
   }
 
+  Future<void> saveSession(Session session) async {
+    final prefs = await _prefs;
+    final existing = prefs.getStringList(_sessionsKey) ?? [];
+    existing.add(jsonEncode(session.toJson()));
+    await prefs.setStringList(_sessionsKey, existing);
+  }
+
   Future<void> updateSession(Session session) async {
     final prefs = await _prefs;
     final existing = prefs.getStringList(_sessionsKey) ?? [];

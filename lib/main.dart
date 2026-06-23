@@ -171,10 +171,12 @@ class _RootShell extends StatefulWidget {
 class _RootShellState extends State<_RootShell> {
   int _currentIndex = 0;
   final _screenshotController = ScreenshotController();
-  static const _screens = [
-    HomeScreen(),
-    StatsScreen(),
-    BabyScreen(),
+  final _statsKey = GlobalKey<StatsScreenState>();
+
+  late final List<Widget> _screens = [
+    const HomeScreen(),
+    StatsScreen(key: _statsKey),
+    const BabyScreen(),
   ];
 
   @override
@@ -225,7 +227,10 @@ class _RootShellState extends State<_RootShell> {
       ),
       bottomNavigationBar: NpBottomNavBar(
         currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
+        onTap: (i) {
+          if (i == 1) _statsKey.currentState?.reload();
+          setState(() => _currentIndex = i);
+        },
       ),
     );
   }

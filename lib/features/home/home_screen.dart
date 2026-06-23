@@ -16,6 +16,7 @@ import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 import '../../shared/widgets/np_chip.dart';
 import '../../shared/widgets/np_stat_tile.dart';
+import '../../shared/widgets/session_editor_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -149,6 +150,38 @@ class _HomeScreenState extends State<HomeScreen> {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
+  void _showAddSessionSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => SessionEditorSheet(
+        onSave: (session) async {
+          await _repo.saveSession(session);
+          await _load();
+        },
+      ),
+    );
+  }
+
+  void _showSessionsSheet(AppLocalizations l10n) {
+    final today = DateTime.now();
+    final todaySessions = _sessions
+        .where((s) =>
+            !s.isActive &&
+            s.startTime.year == today.year &&
+            s.startTime.month == today.month &&
+            s.startTime.day == today.day)
+        .toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _TodaySessionsSheet(sessions: todaySessions),
+    );
+  }
+
   String _lastNursingText(AppLocalizations l10n) {
     final completed = _sessions.where((s) => !s.isActive).toList();
     if (completed.isEmpty) return l10n.lastNursingNoSessions;
@@ -223,7 +256,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
-          _LastNursingNote(text: _lastNursingText(l10n)),
+          Row(
+            children: [
+              Expanded(
+                child: _LastNursingNote(
+                  text: _lastNursingText(l10n),
+                  onTap: _sessions.any((s) => !s.isActive)
+                      ? () => _showSessionsSheet(l10n)
+                      : null,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.stackMd),
+              GestureDetector(
+                onTap: () => _showAddSessionSheet(),
+                child: Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryContainer.withValues(alpha: 0.20),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                  child: const Icon(Icons.add, color: AppColors.primary),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.stackLg),
           _TimerSection(
             isNursing: isNursing,
@@ -247,13 +304,16 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class _LastNursingNote extends StatelessWidget {
-  const _LastNursingNote({required this.text});
+  const _LastNursingNote({required this.text, this.onTap});
   final String text;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return NpCard(
+    return GestureDetector(
+      onTap: onTap,
+      child: NpCard(
       child: Row(
         children: [
           Container(
@@ -282,6 +342,112 @@ class _LastNursingNote extends StatelessWidget {
               ],
             ),
           ),
+          if (onTap != null)
+            const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant, size: 18),
+        ],
+      ),
+      ),
+    );
+  }
+}
+
+class _TodaySessionsSheet extends StatelessWidget {
+  const _TodaySessionsSheet({required this.sessions});
+  final List<Session> sessions;
+
+  String _timeLabel(DateTime dt) {
+    final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final m = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour >= 12 ? 'PM' : 'AM';
+    return '$h:$m $period';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Container(
+      margin: const EdgeInsets.all(AppSpacing.gutter),
+      padding: const EdgeInsets.all(AppSpacing.stackLg),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.statsTodaySessions,
+              style: Theme.of(context).textTheme.headlineMedium),
+          const SizedBox(height: AppSpacing.stackLg),
+          if (sessions.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackLg),
+              child: Text(l10n.statsNoSessionsToday,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      )),
+            )
+          else
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.5,
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: sessions.asMap().entries.map((entry) {
+              final i = entry.key;
+              final s = entry.value;
+              final isLeft = s.side == NursingSide.left;
+              final color = isLeft ? AppColors.primary : AppColors.tertiary;
+              final sideLabel = isLeft ? l10n.sideLeftFull : l10n.sideRightFull;
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.10),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.water_drop, size: 20, color: color),
+                        ),
+                        const SizedBox(width: AppSpacing.stackMd),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(sideLabel,
+                                  style: Theme.of(context).textTheme.labelLarge),
+                              Text(_timeLabel(s.startTime),
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontSize: 12,
+                                        color: AppColors.onSurfaceVariant,
+                                      )),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          '${s.duration.inMinutes} min',
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                color: AppColors.primary,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (i < sessions.length - 1)
+                    const Divider(color: AppColors.surfaceContainerHigh, height: 1),
+                ],
+              );
+            }).toList(),
+                ),
+              ),
+            ),
+          const SizedBox(height: AppSpacing.stackMd),
         ],
       ),
     );
@@ -553,3 +719,4 @@ class _StatsGrid extends StatelessWidget {
     );
   }
 }
+

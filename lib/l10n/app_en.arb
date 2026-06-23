@@ -77,9 +77,10 @@
   "statsNightFeeds": "Night Feeds",
   "statsHoldToEdit": "hold to edit",
   "statsEditSession": "Edit Session",
-  "statsEditHint": "Adjust end time if you forgot to stop the timer",
+  "sessionAddTitle": "Add Session",
+  "statsEditHint": "Tap a time to adjust it",
   "statsStart": "Start",
-  "statsEnd": "End (tap to change)",
+  "statsEnd": "End",
   "statsDuration": "Duration: {minutes} min",
   "@statsDuration": {
     "placeholders": {

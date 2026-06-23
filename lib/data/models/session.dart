@@ -20,11 +20,11 @@ class Session {
 
   bool get isActive => endTime == null;
 
-  Session copyWith({DateTime? endTime}) {
+  Session copyWith({DateTime? startTime, NursingSide? side, DateTime? endTime}) {
     return Session(
       id: id,
-      startTime: startTime,
-      side: side,
+      startTime: startTime ?? this.startTime,
+      side: side ?? this.side,
       endTime: endTime ?? this.endTime,
     );
   }

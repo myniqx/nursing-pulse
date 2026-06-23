@@ -132,14 +132,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get statsEditSession => 'Sessie bewerken';
 
   @override
-  String get statsEditHint =>
-      'Pas de eindtijd aan als u vergeten bent de timer te stoppen';
+  String get sessionAddTitle => 'Sessie toevoegen';
+
+  @override
+  String get statsEditHint => 'Tik op een tijd om aan te passen';
 
   @override
   String get statsStart => 'Start';
 
   @override
-  String get statsEnd => 'Einde (tik om te wijzigen)';
+  String get statsEnd => 'Einde';
 
   @override
   String statsDuration(int minutes) {

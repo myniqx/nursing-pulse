@@ -132,13 +132,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsEditSession => 'Edit Session';
 
   @override
-  String get statsEditHint => 'Adjust end time if you forgot to stop the timer';
+  String get sessionAddTitle => 'Add Session';
+
+  @override
+  String get statsEditHint => 'Tap a time to adjust it';
 
   @override
   String get statsStart => 'Start';
 
   @override
-  String get statsEnd => 'End (tap to change)';
+  String get statsEnd => 'End';
 
   @override
   String statsDuration(int minutes) {

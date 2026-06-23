@@ -310,10 +310,16 @@ abstract class AppLocalizations {
   /// **'Edit Session'**
   String get statsEditSession;
 
+  /// No description provided for @sessionAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Session'**
+  String get sessionAddTitle;
+
   /// No description provided for @statsEditHint.
   ///
   /// In en, this message translates to:
-  /// **'Adjust end time if you forgot to stop the timer'**
+  /// **'Tap a time to adjust it'**
   String get statsEditHint;
 
   /// No description provided for @statsStart.
@@ -325,7 +331,7 @@ abstract class AppLocalizations {
   /// No description provided for @statsEnd.
   ///
   /// In en, this message translates to:
-  /// **'End (tap to change)'**
+  /// **'End'**
   String get statsEnd;
 
   /// No description provided for @statsDuration.

@@ -114,10 +114,10 @@ class _BabyScreenState extends State<BabyScreen> {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => _WeightInputSheet(
-        onSave: (grams) async {
+        onSave: (grams, date) async {
           final entry = WeightEntry(
             id: DateTime.now().millisecondsSinceEpoch.toString(),
-            date: DateTime.now(),
+            date: date,
             grams: grams,
           );
           await _repo.addWeight(entry);
@@ -160,10 +160,11 @@ class _DiaperSection extends StatelessWidget {
     if (diff.inMinutes < 1) return l10n.diaperJustNow;
     if (diff.inMinutes < 60) return l10n.diaperMinAgo(diff.inMinutes);
     if (diff.inHours < 24) return l10n.diaperHourAgo(diff.inHours);
+    final day = '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}';
     final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
     final m = dt.minute.toString().padLeft(2, '0');
     final p = dt.hour >= 12 ? 'PM' : 'AM';
-    return '$h:$m $p';
+    return '$day  $h:$m $p';
   }
 
   @override
@@ -806,7 +807,7 @@ class _WeightSection extends StatelessWidget {
 
 class _WeightInputSheet extends StatefulWidget {
   const _WeightInputSheet({required this.onSave});
-  final void Function(int grams) onSave;
+  final void Function(int grams, DateTime date) onSave;
 
   @override
   State<_WeightInputSheet> createState() => _WeightInputSheetState();
@@ -815,11 +816,46 @@ class _WeightInputSheet extends StatefulWidget {
 class _WeightInputSheetState extends State<_WeightInputSheet> {
   final _controller = TextEditingController();
   bool _isKg = true;
+  late DateTime _date;
+
+  @override
+  void initState() {
+    super.initState();
+    _date = DateTime.now();
+  }
 
   int? get _grams {
     final val = double.tryParse(_controller.text.replaceAll(',', '.'));
     if (val == null) return null;
     return _isKg ? (val * 1000).round() : val.round();
+  }
+
+  Future<void> _pickDateTime() async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (pickedDate == null) return;
+    if (!mounted) return;
+    final pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_date),
+    );
+    if (pickedTime == null) return;
+    setState(() {
+      _date = DateTime(pickedDate.year, pickedDate.month, pickedDate.day,
+          pickedTime.hour, pickedTime.minute);
+    });
+  }
+
+  String _formatDateTime(DateTime dt) {
+    final date = '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
+    final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
+    final m = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour >= 12 ? 'PM' : 'AM';
+    return '$date  $h:$m $period';
   }
 
   @override
@@ -830,14 +866,14 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       margin: const EdgeInsets.all(AppSpacing.gutter),
       padding: EdgeInsets.only(
         left: AppSpacing.stackLg,
         right: AppSpacing.stackLg,
         top: AppSpacing.stackLg,
-        bottom:
-            MediaQuery.of(context).viewInsets.bottom + AppSpacing.stackLg,
+        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.stackLg,
       ),
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLowest,
@@ -847,7 +883,7 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.of(context).weightLogTitle,
+          Text(l10n.weightLogTitle,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackLg),
           Row(
@@ -877,19 +913,33 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
               GestureDetector(
                 onTap: () => setState(() => _isKg = !_isKg),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
                     color: AppColors.secondaryContainer,
                     borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
-                  child: Text(
-                    _isKg ? 'kg' : 'g',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
+                  child: Text(_isKg ? 'kg' : 'g',
+                      style: Theme.of(context).textTheme.labelLarge),
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.stackMd),
+          GestureDetector(
+            onTap: _pickDateTime,
+            child: NpCard(
+              borderColor: AppColors.primary,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_formatDateTime(_date),
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: AppColors.primary,
+                          )),
+                  const Icon(Icons.edit_outlined, size: 14, color: AppColors.onSurfaceVariant),
+                ],
+              ),
+            ),
           ),
           const SizedBox(height: AppSpacing.stackLg),
           SizedBox(
@@ -903,11 +953,11 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
               ),
               onPressed: _grams != null
                   ? () {
-                      widget.onSave(_grams!);
+                      widget.onSave(_grams!, _date);
                       Navigator.pop(context);
                     }
                   : null,
-              child: Text(AppLocalizations.of(context).save),
+              child: Text(l10n.save),
             ),
           ),
         ],

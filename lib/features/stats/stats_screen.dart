@@ -8,6 +8,7 @@ import '../../data/repositories/session_repository.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 import '../../shared/widgets/np_stat_tile.dart';
+import '../../shared/widgets/session_editor_sheet.dart';
 import '../../shared/widgets/weight_chart.dart';
 import 'nursing_history_chart.dart';
 
@@ -15,10 +16,11 @@ class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
 
   @override
-  State<StatsScreen> createState() => _StatsScreenState();
+  State<StatsScreen> createState() => StatsScreenState();
 }
 
-class _StatsScreenState extends State<StatsScreen> {
+class StatsScreenState extends State<StatsScreen> {
+  void reload() => _load();
   final _sessionRepo = SessionRepository();
   final _babyRepo = BabyRepository();
 
@@ -145,7 +147,7 @@ class _StatsScreenState extends State<StatsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _EditSessionSheet(
+      builder: (_) => SessionEditorSheet(
         session: session,
         onSave: (updated) async {
           await _sessionRepo.updateSession(updated);
@@ -322,7 +324,7 @@ class _LateralBalanceCard extends StatelessWidget {
   }
 }
 
-class _SessionHistoryCard extends StatelessWidget {
+class _SessionHistoryCard extends StatefulWidget {
   const _SessionHistoryCard({
     required this.sessions,
     required this.timeLabel,
@@ -336,7 +338,26 @@ class _SessionHistoryCard extends StatelessWidget {
   final void Function(Session) onEdit;
 
   @override
+  State<_SessionHistoryCard> createState() => _SessionHistoryCardState();
+}
+
+class _SessionHistoryCardState extends State<_SessionHistoryCard> {
+  static const _initialLimit = 4;
+  static const _pageSize = 3;
+  int _limit = _initialLimit;
+
+  @override
+  void didUpdateWidget(_SessionHistoryCard old) {
+    super.didUpdateWidget(old);
+    if (old.sessions != widget.sessions) _limit = _initialLimit;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final sessions = widget.sessions;
+    final visible = sessions.take(_limit).toList();
+    final remaining = sessions.length - _limit;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -365,83 +386,95 @@ class _SessionHistoryCard extends StatelessWidget {
                   ),
                 )
               : Column(
-                  children: sessions.asMap().entries.map((entry) {
-                    final i = entry.key;
-                    final s = entry.value;
-                    final isLeft = s.side == NursingSide.left;
-                    final color = isLeft ? AppColors.primary : AppColors.tertiary;
-                    return Column(
-                      children: [
-                        GestureDetector(
-                          onLongPress: () => onEdit(s),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 32,
-                                  height: 32,
-                                  decoration: BoxDecoration(
-                                    color: color.withValues(alpha: 0.10),
-                                    shape: BoxShape.circle,
+                  children: [
+                    ...visible.asMap().entries.map((entry) {
+                      final i = entry.key;
+                      final s = entry.value;
+                      final isLeft = s.side == NursingSide.left;
+                      final color = isLeft ? AppColors.primary : AppColors.tertiary;
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onLongPress: () => widget.onEdit(s),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 32,
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: color.withValues(alpha: 0.10),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.water_drop,
+                                        size: 20, color: color),
                                   ),
-                                  child: Icon(Icons.water_drop,
-                                      size: 20, color: color),
-                                ),
-                                const SizedBox(width: AppSpacing.stackMd),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(sideLabel(s.side),
+                                  const SizedBox(width: AppSpacing.stackMd),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(widget.sideLabel(s.side),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelLarge),
+                                        Text(
+                                          widget.timeLabel(s.startTime),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .labelLarge),
+                                              .bodyMedium
+                                              ?.copyWith(
+                                                fontSize: 12,
+                                                color: AppColors.onSurfaceVariant,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
                                       Text(
-                                        timeLabel(s.startTime),
+                                        AppLocalizations.of(context).statsDuration(s.duration.inMinutes).replaceAll('Duration: ', ''),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyMedium
+                                            .labelLarge
+                                            ?.copyWith(color: AppColors.primary),
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context).statsHoldToEdit,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall
                                             ?.copyWith(
-                                              fontSize: 12,
-                                              color: AppColors.onSurfaceVariant,
-                                            ),
+                                                color: AppColors.onSurfaceVariant
+                                                    .withValues(alpha: 0.5)),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context).statsDuration(s.duration.inMinutes).replaceAll('Duration: ', ''),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelLarge
-                                          ?.copyWith(color: AppColors.primary),
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context).statsHoldToEdit,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall
-                                          ?.copyWith(
-                                              color: AppColors.onSurfaceVariant
-                                                  .withValues(alpha: 0.5)),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
+                          if (i < visible.length - 1 || remaining > 0)
+                            const Divider(
+                                color: AppColors.surfaceContainerHigh, height: 1),
+                        ],
+                      );
+                    }),
+                    if (remaining > 0)
+                      TextButton(
+                        onPressed: () => setState(() => _limit += _pageSize),
+                        child: Text(
+                          'Show ${remaining.clamp(0, _pageSize)} more',
+                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                color: AppColors.primary,
+                              ),
                         ),
-                        if (i < sessions.length - 1)
-                          const Divider(
-                              color: AppColors.surfaceContainerHigh, height: 1),
-                      ],
-                    );
-                  }).toList(),
+                      ),
+                  ],
                 ),
         ),
       ],
@@ -490,145 +523,3 @@ class _InsightsBento extends StatelessWidget {
   }
 }
 
-class _EditSessionSheet extends StatefulWidget {
-  const _EditSessionSheet({required this.session, required this.onSave});
-  final Session session;
-  final void Function(Session) onSave;
-
-  @override
-  State<_EditSessionSheet> createState() => _EditSessionSheetState();
-}
-
-class _EditSessionSheetState extends State<_EditSessionSheet> {
-  late DateTime _endTime;
-
-  @override
-  void initState() {
-    super.initState();
-    _endTime = widget.session.endTime ?? DateTime.now();
-  }
-
-  Future<void> _pickTime() async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_endTime),
-    );
-    if (picked != null) {
-      setState(() {
-        _endTime = DateTime(
-          _endTime.year,
-          _endTime.month,
-          _endTime.day,
-          picked.hour,
-          picked.minute,
-        );
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final dur = _endTime.difference(widget.session.startTime);
-    final durMin = dur.inMinutes.clamp(0, 999);
-
-    return Container(
-      margin: const EdgeInsets.all(AppSpacing.gutter),
-      padding: EdgeInsets.only(
-        left: AppSpacing.stackLg,
-        right: AppSpacing.stackLg,
-        top: AppSpacing.stackLg,
-        bottom: MediaQuery.of(context).viewInsets.bottom + AppSpacing.stackLg,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(AppLocalizations.of(context).statsEditSession,
-              style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: AppSpacing.stackLg),
-          Text(
-            AppLocalizations.of(context).statsEditHint,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
-          ),
-          const SizedBox(height: AppSpacing.stackLg),
-          Row(
-            children: [
-              Expanded(
-                child: NpCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(AppLocalizations.of(context).statsStart,
-                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                color: AppColors.onSurfaceVariant,
-                              )),
-                      Text(
-                        TimeOfDay.fromDateTime(widget.session.startTime)
-                            .format(context),
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.gutter),
-              Expanded(
-                child: GestureDetector(
-                  onTap: _pickTime,
-                  child: NpCard(
-                    borderColor: AppColors.primary,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(AppLocalizations.of(context).statsEnd,
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelSmall
-                                ?.copyWith(color: AppColors.primary)),
-                        Text(
-                          TimeOfDay.fromDateTime(_endTime).format(context),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: AppColors.primary,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.stackMd),
-          Text(
-            AppLocalizations.of(context).statsDuration(durMin),
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
-          ),
-          const SizedBox(height: AppSpacing.stackLg),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppRadius.full)),
-              ),
-              onPressed: () {
-                widget.onSave(widget.session.copyWith(endTime: _endTime));
-                Navigator.pop(context);
-              },
-              child: Text(AppLocalizations.of(context).save),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}

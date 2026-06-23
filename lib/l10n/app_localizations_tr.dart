@@ -132,14 +132,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statsEditSession => 'Seansı Düzenle';
 
   @override
-  String get statsEditHint =>
-      'Sayacı durdurmayı unuttuysanız bitiş saatini ayarlayın';
+  String get sessionAddTitle => 'Seans Ekle';
+
+  @override
+  String get statsEditHint => 'Değiştirmek için saate dokunun';
 
   @override
   String get statsStart => 'Başlangıç';
 
   @override
-  String get statsEnd => 'Bitiş (değiştirmek için dokun)';
+  String get statsEnd => 'Bitiş';
 
   @override
   String statsDuration(int minutes) {
