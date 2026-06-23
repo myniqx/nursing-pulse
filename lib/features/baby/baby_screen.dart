@@ -653,9 +653,10 @@ class _WeightSection extends StatelessWidget {
           const SizedBox(height: AppSpacing.stackMd),
           NpCard(
             child: Column(
-              children: weights.asMap().entries.map((entry) {
+              children: weights.take(5).toList().asMap().entries.map((entry) {
                 final i = entry.key;
                 final w = entry.value;
+                final visibleCount = weights.length > 5 ? 5 : weights.length;
                 return Column(
                   children: [
                     Padding(
@@ -698,7 +699,7 @@ class _WeightSection extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (i < weights.length - 1)
+                    if (i < visibleCount - 1)
                       const Divider(
                           color: AppColors.surfaceContainerHigh, height: 1),
                   ],
@@ -706,6 +707,17 @@ class _WeightSection extends StatelessWidget {
               }).toList(),
             ),
           ),
+          if (weights.length > 5) ...[
+            const SizedBox(height: AppSpacing.stackSm),
+            Center(
+              child: Text(
+                '+${weights.length - 5} more — full history in Stats',
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+              ),
+            ),
+          ],
         ],
       ],
     );

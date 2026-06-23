@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
+import '../../data/models/weight_entry.dart';
+import '../../data/repositories/baby_repository.dart';
 import '../../data/repositories/session_repository.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 import '../../shared/widgets/np_stat_tile.dart';
+import 'nursing_history_chart.dart';
 
 class StatsScreen extends StatefulWidget {
   const StatsScreen({super.key});
@@ -13,8 +17,12 @@ class StatsScreen extends StatefulWidget {
 }
 
 class _StatsScreenState extends State<StatsScreen> {
-  final _repo = SessionRepository();
+  final _sessionRepo = SessionRepository();
+  final _babyRepo = BabyRepository();
+
   List<Session> _sessions = [];
+  List<DiaperLog> _diapers = [];
+  List<WeightEntry> _weights = [];
   bool _loading = true;
 
   @override
@@ -24,9 +32,13 @@ class _StatsScreenState extends State<StatsScreen> {
   }
 
   Future<void> _load() async {
-    final sessions = await _repo.getSessions();
+    final sessions = await _sessionRepo.getSessions();
+    final diapers = await _babyRepo.getDiapers();
+    final weights = await _babyRepo.getWeights();
     setState(() {
       _sessions = sessions.where((s) => !s.isActive).toList();
+      _diapers = diapers;
+      _weights = weights;
       _loading = false;
     });
   }
@@ -106,6 +118,12 @@ class _StatsScreenState extends State<StatsScreen> {
               onEdit: _showEditSheet,
             ),
             const SizedBox(height: AppSpacing.stackLg),
+            NursingHistoryChart(
+              sessions: _sessions,
+              diapers: _diapers,
+              weights: _weights,
+            ),
+            const SizedBox(height: AppSpacing.stackLg),
             _InsightsBento(
               avgMinutes: _avgDurationMinutes,
               nightFeeds: _nightFeedCount,
@@ -124,7 +142,7 @@ class _StatsScreenState extends State<StatsScreen> {
       builder: (_) => _EditSessionSheet(
         session: session,
         onSave: (updated) async {
-          await _repo.updateSession(updated);
+          await _sessionRepo.updateSession(updated);
           await _load();
         },
       ),
