@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-high": "#e9e8e7",
+                    "primary-container": "#8ba88e",
+                    "surface-container-low": "#f5f3f3",
+                    "tertiary": "#8d4c3f",
+                    "secondary-fixed-dim": "#c9c6be",
+                    "inverse-primary": "#b0ceb2",
+                    "tertiary-container": "#db8d7d",
+                    "surface-container-highest": "#e4e2e2",
+                    "error-container": "#ffdad6",
+                    "surface-tint": "#4a654e",
+                    "inverse-surface": "#303030",
+                    "on-primary-fixed-variant": "#334d38",
+                    "primary-fixed-dim": "#b0ceb2",
+                    "outline-variant": "#c2c8c0",
+                    "on-primary-container": "#233d29",
+                    "on-primary-fixed": "#07200f",
+                    "on-background": "#1b1c1c",
+                    "primary": "#4a654e",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#66645e",
+                    "surface-dim": "#dbdad9",
+                    "inverse-on-surface": "#f2f0f0",
+                    "surface-variant": "#e4e2e2",
+                    "on-surface": "#1b1c1c",
+                    "secondary-fixed": "#e6e2d9",
+                    "tertiary-fixed": "#ffdad3",
+                    "primary-fixed": "#cceace",
+                    "surface": "#fbf9f8",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#484741",
+                    "surface-bright": "#fbf9f8",
+                    "tertiary-fixed-dim": "#ffb4a5",
+                    "on-secondary-fixed": "#1c1c17",
+                    "secondary-container": "#e6e2d9",
+                    "on-tertiary-fixed": "#390c04",
+                    "secondary": "#605e58",
+                    "outline": "#737972",
+                    "on-tertiary-container": "#5e271c",
+                    "error": "#ba1a1a",
+                    "on-surface-variant": "#424842",
+                    "on-tertiary-fixed-variant": "#70362a",
+                    "on-primary": "#ffffff",
+                    "background": "#fbf9f8",
+                    "surface-container": "#efeded"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "stack-lg": "24px",
+                    "container-padding": "20px",
+                    "stack-sm": "4px",
+                    "stack-md": "12px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"],
+                    "body-md": ["Be Vietnam Pro"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Be Vietnam Pro"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["26px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #fbf9f8;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timer-glow {
+            box-shadow: 0 0 30px rgba(139, 168, 142, 0.2);
+        }
+        .soft-card-shadow {
+            box-shadow: 0 4px 12px rgba(74, 101, 78, 0.08);
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface-dim z-50">
+<div class="flex justify-between items-center px-container-padding h-16 max-w-[480px] mx-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary-container">
+<img class="w-full h-full object-cover" data-alt="A soft, high-quality portrait of a smiling woman in a warm sunlit room, emphasizing a gentle and nurturing atmosphere. The image uses a soft-focus background with creamy tones and a muted sage green color palette to match the nursing app's calming aesthetic. The lighting is natural and high-key, creating a serene and supportive feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6B4qHBHsjhlCkQwWq4-co98ehW32wFa6SOn6ysYmMDtVAHmvFM0KaOmkjcxftm9lqjonVWAb50VHTazuwsiaT4sj44ZX2b-2qT1FI8xeKHrVRG-cPSh1bOYarKLdzN7Ah8roy9FiyBzWD1xJ4alfVxPkpprgwdlWkXzBMu5WtRaGyYKStNlI7TiZmSjbfjUXS_wrV5lAqJUHI1BnBK9uakya-Td-TvQkWQSrRu_Z5hCQffA_sL-ot50jjcSr6-jpxQWri_e4oLYc"/>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim">Nursing Pulse</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-low transition-colors active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<main class="max-w-[480px] mx-auto px-container-padding pb-32 pt-stack-md">
+<!-- Last Nursing Note -->
+<section class="mb-stack-lg">
+<div class="bg-white rounded-xl p-stack-md border border-[#F2EBDC] soft-card-shadow flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-container/20 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</div>
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Last Nursing</p>
+<p class="text-body-md font-body-md">2 hours ago from <span class="text-primary font-bold">Left side</span></p>
+</div>
+</div>
+</section>
+<!-- Timer Section -->
+<section class="flex flex-col items-center justify-center py-stack-lg">
+<div class="relative flex flex-col items-center justify-center w-72 h-72" id="timer-container">
+<!-- Progress Ring -->
+<svg class="absolute w-full h-full" viewbox="0 0 200 200">
+<circle class="text-primary/10" cx="100" cy="100" fill="transparent" r="88" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary progress-ring__circle" cx="100" cy="100" fill="transparent" id="progress-circle" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="552.92" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<!-- Interactive Button -->
+<button class="relative z-10 w-56 h-56 rounded-full bg-primary text-white flex flex-col items-center justify-center shadow-lg active:scale-95 transition-all duration-300" id="main-action-btn">
+<div class="flex flex-col items-center" id="start-state">
+<span class="material-symbols-outlined text-[48px]" data-icon="play_arrow" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+<span class="font-headline-md text-headline-md mt-2">Start Nursing</span>
+</div>
+<div class="hidden flex flex-col items-center" id="active-state">
+<span class="font-headline-lg-mobile text-headline-lg-mobile tabular-nums" id="timer-display">00:00</span>
+<span class="font-label-md text-label-md mt-1 opacity-80">Nursing...</span>
+</div>
+</button>
+</div>
+<!-- Finish Button (Visible during active) -->
+<button class="hidden mt-stack-lg px-8 py-3 bg-tertiary-container text-on-tertiary-container rounded-full font-label-md text-label-md active:scale-95 transition-transform" id="finish-btn">
+                Finish Session
+            </button>
+<!-- Quick Selection Chips -->
+<div class="flex gap-4 mt-stack-lg" id="side-selection">
+<button class="side-chip active px-6 py-2 rounded-full border-2 border-primary bg-primary text-white font-label-md transition-all" data-side="left">Left</button>
+<button class="side-chip px-6 py-2 rounded-full border-2 border-outline text-outline font-label-md transition-all" data-side="right">Right</button>
+</div>
+</section>
+<!-- Stats Overview (Bento Style) -->
+<section class="grid grid-cols-2 gap-gutter mt-stack-lg">
+<div class="bg-white rounded-xl p-stack-md border border-[#F2EBDC] soft-card-shadow">
+<span class="material-symbols-outlined text-primary mb-2" data-icon="opacity">opacity</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Daily Total</p>
+<p class="text-headline-md font-headline-md">142<span class="text-label-sm font-label-sm ml-1">min</span></p>
+</div>
+<div class="bg-white rounded-xl p-stack-md border border-[#F2EBDC] soft-card-shadow">
+<span class="material-symbols-outlined text-tertiary mb-2" data-icon="baby_changing_station">baby_changing_station</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Diapers</p>
+<p class="text-headline-md font-headline-md">6<span class="text-label-sm font-label-sm ml-1">today</span></p>
+</div>
+<div class="col-span-2 bg-secondary-container/30 rounded-xl p-stack-md border border-[#F2EBDC] soft-card-shadow flex justify-between items-center">
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Next suggested feed</p>
+<p class="text-body-md font-body-md font-semibold">Around 4:30 PM</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 right-0 flex justify-around items-center py-base px-container-padding max-w-[480px] mx-auto bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md z-50 rounded-t-xl border-t border-surface-container-high dark:border-outline-variant shadow-[0_-4px_12px_rgba(74,101,78,0.1)]">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-6 py-1 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest/50 transition-all active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Stats</span>
+</a>
+</nav>
+<script>
+        let isNursing = false;
+        let seconds = 0;
+        let timerInterval;
+        const progressCircle = document.getElementById('progress-circle');
+        const circumference = 2 * Math.PI * 88;
+
+        const mainBtn = document.getElementById('main-action-btn');
+        const finishBtn = document.getElementById('finish-btn');
+        const startState = document.getElementById('start-state');
+        const activeState = document.getElementById('active-state');
+        const timerDisplay = document.getElementById('timer-display');
+        const sideChips = document.querySelectorAll('.side-chip');
+
+        function updateProgress(percent) {
+            const offset = circumference - (percent / 100 * circumference);
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function formatTime(sec) {
+            const mins = Math.floor(sec / 60);
+            const secs = sec % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        mainBtn.addEventListener('click', () => {
+            if (!isNursing) {
+                // Start
+                isNursing = true;
+                startState.classList.add('hidden');
+                activeState.classList.remove('hidden');
+                finishBtn.classList.remove('hidden');
+                mainBtn.classList.replace('bg-primary', 'bg-primary-container');
+                
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    timerDisplay.innerText = formatTime(seconds);
+                    // Mock progress - loop every 5 mins (300s)
+                    updateProgress((seconds % 300) / 300 * 100);
+                }, 1000);
+            }
+        });
+
+        finishBtn.addEventListener('click', () => {
+            // Stop
+            isNursing = false;
+            clearInterval(timerInterval);
+            seconds = 0;
+            updateProgress(0);
+            timerDisplay.innerText = "00:00";
+            
+            startState.classList.remove('hidden');
+            activeState.classList.add('hidden');
+            finishBtn.classList.add('hidden');
+            mainBtn.classList.replace('bg-primary-container', 'bg-primary');
+        });
+
+        sideChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                sideChips.forEach(c => {
+                    c.classList.remove('active', 'bg-primary', 'text-white', 'border-primary');
+                    c.classList.add('text-outline', 'border-outline');
+                });
+                chip.classList.add('active', 'bg-primary', 'text-white', 'border-primary');
+                chip.classList.remove('text-outline', 'border-outline');
+            });
+        });
+    </script>
+</body></html>
