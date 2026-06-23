@@ -27,6 +27,7 @@ const _kLocaleKey = 'np_locale';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterForegroundTask.initCommunicationPort();
   NursingSessionService.initForegroundTask();
   await MockDataSeeder.seedIfNeeded();
   runApp(const NursingPulseApp());
@@ -87,6 +88,9 @@ class _OverlayAppState extends State<_OverlayApp> {
         child: Center(
           child: NursingBadge(
             formattedTime: _fmt(_elapsed),
+            onOpenApp: () {
+              FlutterForegroundTask.launchApp();
+            },
             onFinish: () {
               HapticFeedback.lightImpact();
               IsolateNameServer.lookupPortByName('NP_MAIN')?.send('finish');

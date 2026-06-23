@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart' as fow;
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _kNotifEnabled = 'np_notif_enabled';
@@ -65,8 +65,8 @@ class NursingSessionService {
         channelId: 'nursing_timer',
         channelName: 'Nursing Timer',
         channelDescription: 'Shows the active nursing session timer',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
+        channelImportance: NotificationChannelImportance.DEFAULT,
+        priority: NotificationPriority.DEFAULT,
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
       foregroundTaskOptions: ForegroundTaskOptions(
@@ -108,6 +108,7 @@ class NursingSessionService {
     }
     if (overlay && context.mounted) {
       await _showOverlay(context);
+      fow.FlutterOverlayWindow.shareData({'elapsed': elapsedSeconds});
     }
   }
 
@@ -120,8 +121,8 @@ class NursingSessionService {
     if (await FlutterForegroundTask.isRunningService) {
       await FlutterForegroundTask.saveData(key: 'elapsed', value: seconds);
     }
-    if (await FlutterOverlayWindow.isActive()) {
-      FlutterOverlayWindow.shareData({'elapsed': seconds});
+    if (await fow.FlutterOverlayWindow.isActive()) {
+      fow.FlutterOverlayWindow.shareData({'elapsed': seconds});
     }
   }
 
@@ -153,27 +154,30 @@ class NursingSessionService {
   // ---- overlay ----
 
   Future<void> _showOverlay(BuildContext context) async {
-    final granted = await FlutterOverlayWindow.isPermissionGranted();
+    final granted = await fow.FlutterOverlayWindow.isPermissionGranted();
     if (!granted) {
-      final result = await FlutterOverlayWindow.requestPermission();
+      final result = await fow.FlutterOverlayWindow.requestPermission();
       if (result != true) return;
     }
-    if (!await FlutterOverlayWindow.isActive()) {
-      await FlutterOverlayWindow.showOverlay(
+    if (!await fow.FlutterOverlayWindow.isActive()) {
+      await fow.FlutterOverlayWindow.showOverlay(
         height: 120,
         width: 440,
-        alignment: OverlayAlignment.topCenter,
-        flag: OverlayFlag.defaultFlag,
+        alignment: fow.OverlayAlignment.topCenter,
+        flag: fow.OverlayFlag.defaultFlag,
+        overlayTitle: 'Nursing Pulse',
+        overlayContent: 'Nursing session in progress',
+        visibility: fow.NotificationVisibility.visibilitySecret,
         enableDrag: true,
-        positionGravity: PositionGravity.none,
-        startPosition: const OverlayPosition(0, 200),
+        positionGravity: fow.PositionGravity.none,
+        startPosition: const fow.OverlayPosition(0, 200),
       );
     }
   }
 
   Future<void> _hideOverlay() async {
-    if (await FlutterOverlayWindow.isActive()) {
-      await FlutterOverlayWindow.closeOverlay();
+    if (await fow.FlutterOverlayWindow.isActive()) {
+      await fow.FlutterOverlayWindow.closeOverlay();
     }
   }
 }
