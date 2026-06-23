@@ -96,10 +96,14 @@ class NursingSessionService {
     await prefs.setBool(_kOverlayEnabled, value);
   }
 
-  Future<void> start({required int elapsedSeconds, required BuildContext context}) async {
+  Future<void> start({
+    required int elapsedSeconds,
+    required BuildContext context,
+  }) async {
     final notif = await isNotifEnabled;
     final overlay = await isOverlayEnabled;
     if (notif) {
+      await FlutterForegroundTask.requestNotificationPermission();
       await _startForeground(elapsedSeconds);
     }
     if (overlay && context.mounted) {
@@ -149,20 +153,20 @@ class NursingSessionService {
   // ---- overlay ----
 
   Future<void> _showOverlay(BuildContext context) async {
-    if (!await FlutterOverlayWindow.isPermissionGranted()) {
-      if (context.mounted) {
-        final granted = await FlutterOverlayWindow.requestPermission();
-        if (granted != true) return;
-      }
+    final granted = await FlutterOverlayWindow.isPermissionGranted();
+    if (!granted) {
+      final result = await FlutterOverlayWindow.requestPermission();
+      if (result != true) return;
     }
     if (!await FlutterOverlayWindow.isActive()) {
       await FlutterOverlayWindow.showOverlay(
-        height: 64,
-        width: WindowSize.matchParent,
-        alignment: OverlayAlignment.bottomCenter,
+        height: 120,
+        width: 440,
+        alignment: OverlayAlignment.topCenter,
         flag: OverlayFlag.defaultFlag,
         enableDrag: true,
-        positionGravity: PositionGravity.auto,
+        positionGravity: PositionGravity.none,
+        startPosition: const OverlayPosition(0, 200),
       );
     }
   }

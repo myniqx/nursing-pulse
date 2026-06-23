@@ -364,11 +364,53 @@ abstract class AppLocalizations {
   /// **'Weight'**
   String get statsWeightLabel;
 
+  /// No description provided for @statsUnitMin.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get statsUnitMin;
+
+  /// No description provided for @statsUnitTimes.
+  ///
+  /// In en, this message translates to:
+  /// **'times'**
+  String get statsUnitTimes;
+
   /// No description provided for @statsToday.
   ///
   /// In en, this message translates to:
   /// **'Today'**
   String get statsToday;
+
+  /// No description provided for @statsYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get statsYesterday;
+
+  /// No description provided for @statsLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get statsLast7Days;
+
+  /// No description provided for @statsLast14Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 14 days'**
+  String get statsLast14Days;
+
+  /// No description provided for @statsDaytimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daytime'**
+  String get statsDaytimeLabel;
+
+  /// No description provided for @statsDiapersLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Diapers'**
+  String get statsDiapersLabel;
 
   /// No description provided for @statsSelectPeriod.
   ///
@@ -381,6 +423,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom range'**
   String get statsCustomRange;
+
+  /// No description provided for @weightMinEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least 2 weight entries to see the chart'**
+  String get weightMinEntries;
 
   /// No description provided for @diaperLogTitle.
   ///
@@ -675,6 +723,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'6h'**
   String get settingsFeedIntervalMax;
+
+  /// No description provided for @settingsFeedIntervalDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Feeding intervals are estimates. Always follow your healthcare provider\'s advice.'**
+  String get settingsFeedIntervalDisclaimer;
 
   /// No description provided for @settingsResetToRecommended.
   ///

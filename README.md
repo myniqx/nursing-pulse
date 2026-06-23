@@ -1,62 +1,66 @@
-# nursing_pulse
+# Nursing Pulse
 
-A new Flutter project.
+A Flutter app for tracking breastfeeding sessions and baby health data. Designed for new parents who want a simple, calm interface to log feeds, monitor diaper changes, and track baby weight over time.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+### Home
+- **Session timer** — tap the large circular button to start a nursing session; a live MM:SS counter and an animated progress ring update every second
+- **Side selection** — choose Left or Right before starting; switching sides mid-session automatically closes the current segment and opens a new one
+- **Daily stats** — total nursing minutes for the day and today's diaper count shown at a glance
+- **Next feed suggestion** — calculates the recommended next feed time based on the last session end time and the configured feed interval
 
-A few resources to get you started if this is your first Flutter project:
+### Stats
+- **Today's summary** — total nursing time formatted as hours and minutes
+- **Lateral balance card** — visual bar showing the left/right time split with percentages and durations
+- **Session history** — list of today's sessions; long-press any entry to edit its end time via a bottom sheet
+- **Insights** — average session duration and night feed count (midnight–6 AM)
+- **Nursing history chart** — 7-day bar chart of daily nursing minutes overlaid with diaper counts
+- **Weight chart** — line chart of all recorded weight entries
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### Baby
+- **Diaper logging** — three quick-tap buttons (Wet / Dirty / Both) open a sheet with type selection and time picker; entries can be deleted
+- **Weight tracking** — log weight in kg or grams; the latest entry card shows the trend (gain/loss) compared to the previous entry with a color indicator
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Settings
+- **Baby profile** — name, birth date, and a customizable feed interval slider (1–6 h in 30-minute steps); the recommended range is derived automatically from the baby's age
+- **Notifications** — toggle the persistent foreground notification timer and the floating overlay badge independently
+- **Language** — switch between English, Turkish, and Dutch; or follow the system locale
+- **Clear stats** — wipe all session, diaper, and weight data after a confirmation dialog
 
+### Foreground service & overlay (Android)
+When a nursing session is active, the app runs a foreground service that ticks every second and keeps the notification timer updated. A floating overlay badge appears over other apps showing the elapsed time with Open and Finish buttons.
 
- Temel İşlevler (Olmazsa olmaz)
+## Supported platforms
 
-  Emzirme takibi
-  - Başlat / Bitir butonu + geçen süre sayacı  > burada uygulamanın sürekli açık kalmayacağını unutmamak lazım. bilgi gelir gelmez persist edilip, tekrar açılışta o bilgilerden durum hesaplanmalı, mesela başlatıldı, uygulama kapatıldı. tekrar açıldığında son başlatılan saatten geçen süre ve bitir buttonu görünümü gibi...
-  - Sol / Sağ taraf seçimi >> bazen anne hemen sol dan sağa geçiyor. burada Sol ve Sağ bu checkbox gibi işlev mi görecek. misal Sol seçili iken başlat dedi, o sırada 10dakika geçti, annenin minimum çaba ile takip yapması için Sağa tıklaması yeterli olmalı. meme değişimi esnasında stop -> sağ -> start yapma işlemini anneye bırakmamalı bunu kolaylaştırmalıyız.
-  - Her seans otomatik kayıt (saat, süre, taraf) > olası anne kapat demeyi unutursa, sessionu editleme özelliği koyabiliriz. atıyorum cocuk ağladı. 10dakika  sonra durdur dedi. elle bitiş süresini X dakika değiştirebilsin.
+| Platform | Status |
+|----------|--------|
+| Android  | Primary target |
+| Windows  | Supported (desktop window opens at 576×1024) |
+| Web / iOS | Not tested |
 
-  Son seans bilgisi
-  - "2 saat önce, Sol taraftan" gibi anlık hatırlatma — ekranı açınca ilk göz atılan şey > bu süper
+## Tech stack
 
-  Sonraki önerilen besleme
-  - Son seansın saatine + bebek yaşına göre "~4:30'da besle" tahmini > ayarlar kısmında bebek doğum tarihini sorup bunu biz hesaplayabilir miyiz?
+- Flutter 3.44 / Dart 3.11
+- [`flutter_foreground_task`](https://pub.dev/packages/flutter_foreground_task) — background timer and notification
+- [`flutter_overlay_window`](https://pub.dev/packages/flutter_overlay_window) — floating badge over other apps
+- [`fl_chart`](https://pub.dev/packages/fl_chart) — nursing history and weight charts
+- [`shared_preferences`](https://pub.dev/packages/shared_preferences) — local persistence for all data
+- [`screenshot`](https://pub.dev/packages/screenshot) — dev-only screen capture
+- [`google_fonts`](https://pub.dev/packages/google_fonts) — Plus Jakarta Sans typeface
 
-  ---
-  İstatistik Ekranı
+## Getting started
 
-  - Günlük toplam süre
-  - Sol/Sağ denge (yüzde + görsel bar)
-  - Günlük/haftalık seans geçmişi listesi
-  - Gece beslemesi sayısı (gece 00:00–06:00 arası)
-  - Ortalama seans süresi
+```bash
+flutter pub get
+flutter run
+```
 
-  ---
-  Benim önerdiğim ekstra fikirler
+Android requires the foreground service and notification permissions granted at runtime. The overlay badge additionally requires the "Draw over other apps" permission.
 
-  Bebek profili
-  Doğum tarihi girilirse yaşa göre "ideal besleme aralığı" öneri eşiği otomatik ayarlanır (yenidoğan: 2–3 saat, 3 ay+: 3–4 saat). > yes!
+## Dev tools
 
-  Bez takibi
-  Design'da zaten var — "6 today" satırı. Islak / kirli ayrımı + günlük sayım. Sağlık göstergesi olarak önemli. > bunun inputunu nasıl sağlarız. yine ana ekranda altta bir yere mi koyacağız yoksa Diapers cardına tıklanınca başka bir screena mı geçecek?
+In debug builds only:
 
-  Bildirim / hatırlatma
-  Son beslemeden X saat sonra sessiz bildirim. Gece modu: titreşim only. > bildirim
-
-  Büyüme notu
-  Haftalık kilo girişi + basit grafik. Doktora götürmeden önce "son 2 haftada X gr aldı" özeti. > bu da mantıklı dieper gibi bu veri için ayrı bir screenmı koysak ana ekran emzirmeye odaklı. diğer kısma geçince bez ekleme çocuğun kilosunu girme (ne zaman girilirse default o tarih ve saat ile not alır, istatistiği bu veriden çıkarır, değişim vs.)
-
-  ---
-  Şimdilik dışarıda bırakabileceğimiz şeyler
-
-  - Mama/şişe takibi (ml girişi) — karmaşıklık artıyor, v2 olabilir
-  - Uyku takibi — ayrı bir uygulama konusu
-  - Çoklu bebek — nadir ihtiyaç, ilk sürümü karmaşıklaştırır
+- **Screenshot** — tap the app icon in the header to capture the current screen and save it to `screenshots/` in the project root
+- **Seed data** — Settings → [DEV] → "Seed 6 Months of Data" fills the database with realistic mock sessions, diapers, and weights

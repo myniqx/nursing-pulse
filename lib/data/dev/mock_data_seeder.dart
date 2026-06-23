@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
+import '../../shared/dev_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/session.dart';
 import '../models/diaper_log.dart';
@@ -44,11 +45,7 @@ class MockDataSeeder {
     debugPrint('[MockDataSeeder] Done.');
   }
 
-  static bool get _shouldSeed {
-    if (!kDebugMode) return false;
-    // defaultTargetPlatform is windows when running on desktop
-    return defaultTargetPlatform == TargetPlatform.windows;
-  }
+  static bool get _shouldSeed => isDev;
 
   static Future<void> _seedSessions(SharedPreferences prefs) async {
     final rng = Random(42);

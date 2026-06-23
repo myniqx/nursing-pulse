@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
+import '../../shared/dev_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import 'package:nursing_pulse/main.dart';
-import 'package:nursing_pulse/overlay_main.dart';
 import 'package:nursing_pulse/services/nursing_session_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/dev/mock_data_seeder.dart';
@@ -10,6 +10,7 @@ import '../../data/models/baby_profile.dart';
 import '../../data/repositories/baby_repository.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_section.dart';
+import '../../shared/widgets/nursing_badge.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -237,7 +238,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           // 5 — Dev (debug only)
-          if (kDebugMode) ...[
+          if (isDev) ...[
             const SizedBox(height: AppSpacing.stackLg),
             _DevSection(
               seeding: _seeding,
@@ -449,6 +450,14 @@ class _BabyProfileForm extends StatelessWidget {
                       .labelSmall
                       ?.copyWith(color: AppColors.onSurfaceVariant)),
             ],
+          ),
+          const SizedBox(height: AppSpacing.stackMd),
+          Text(
+            l10n.settingsFeedIntervalDisclaimer,
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.onSurfaceVariant.withValues(alpha: 0.6),
+                  fontStyle: FontStyle.italic,
+                ),
           ),
         ] else ...[
           Text(
@@ -768,7 +777,6 @@ class _DevSection extends StatelessWidget {
           const SizedBox(height: AppSpacing.stackMd),
           NursingBadge(
             formattedTime: '04:32',
-            onOpenApp: () {},
             onFinish: () {},
           ),
           const SizedBox(height: AppSpacing.stackLg),

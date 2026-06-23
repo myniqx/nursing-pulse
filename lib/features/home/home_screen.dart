@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/baby_profile.dart';
 import '../../data/models/diaper_log.dart';
@@ -32,13 +35,21 @@ class _HomeScreenState extends State<HomeScreen> {
   NursingSide _selectedSide = NursingSide.left;
   BabyProfile? _profile;
   Timer? _ticker;
+  final _receivePort = ReceivePort();
+
+  static const _kPortName = 'NP_MAIN';
 
   @override
   void initState() {
     super.initState();
     _load();
-    // Finish triggered from notification button or overlay
     FlutterForegroundTask.addTaskDataCallback(_onForegroundData);
+    _receivePort.listen((message) {
+      if (message == 'finish' && _activeSession != null) {
+        _finishNursing();
+      }
+    });
+    IsolateNameServer.registerPortWithName(_receivePort.sendPort, _kPortName);
   }
 
   void _onForegroundData(dynamic data) {
@@ -66,7 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startTicker() {
     _ticker?.cancel();
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) => setState(() {}));
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {});
+      if (_activeSession != null) {
+        final elapsed = DateTime.now().difference(_activeSession!.startTime).inSeconds;
+        NursingSessionService.instance.updateElapsed(elapsed);
+      }
+    });
   }
 
   Future<void> _startNursing() async {
@@ -186,6 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _ticker?.cancel();
+    _receivePort.close();
+    IsolateNameServer.removePortNameMapping(_kPortName);
     FlutterForegroundTask.removeTaskDataCallback(_onForegroundData);
     super.dispose();
   }

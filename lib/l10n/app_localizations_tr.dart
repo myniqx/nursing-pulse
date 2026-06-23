@@ -162,13 +162,38 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statsWeightLabel => 'Kilo';
 
   @override
+  String get statsUnitMin => 'dk';
+
+  @override
+  String get statsUnitTimes => 'kez';
+
+  @override
   String get statsToday => 'Bugün';
+
+  @override
+  String get statsYesterday => 'Dün';
+
+  @override
+  String get statsLast7Days => 'Son 7 gün';
+
+  @override
+  String get statsLast14Days => 'Son 14 gün';
+
+  @override
+  String get statsDaytimeLabel => 'Gündüz';
+
+  @override
+  String get statsDiapersLabel => 'Bez';
 
   @override
   String get statsSelectPeriod => 'Dönem Seç';
 
   @override
   String get statsCustomRange => 'Özel aralık';
+
+  @override
+  String get weightMinEntries =>
+      'Grafiği görmek için en az 2 kilo kaydı ekleyin';
 
   @override
   String get diaperLogTitle => 'Bez Kaydı';
@@ -333,6 +358,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsFeedIntervalMax => '6s';
+
+  @override
+  String get settingsFeedIntervalDisclaimer =>
+      'Besleme aralıkları tahminidir. Her zaman sağlık uzmanınızın önerilerine uyun.';
 
   @override
   String get settingsResetToRecommended => 'Öneriye sıfırla';

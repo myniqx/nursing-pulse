@@ -162,13 +162,38 @@ class AppLocalizationsNl extends AppLocalizations {
   String get statsWeightLabel => 'Gewicht';
 
   @override
+  String get statsUnitMin => 'min';
+
+  @override
+  String get statsUnitTimes => 'keer';
+
+  @override
   String get statsToday => 'Vandaag';
+
+  @override
+  String get statsYesterday => 'Gisteren';
+
+  @override
+  String get statsLast7Days => 'Laatste 7 dagen';
+
+  @override
+  String get statsLast14Days => 'Laatste 14 dagen';
+
+  @override
+  String get statsDaytimeLabel => 'Overdag';
+
+  @override
+  String get statsDiapersLabel => 'Luiers';
 
   @override
   String get statsSelectPeriod => 'Periode selecteren';
 
   @override
   String get statsCustomRange => 'Aangepast bereik';
+
+  @override
+  String get weightMinEntries =>
+      'Voeg minimaal 2 gewichtsinvoeren toe om de grafiek te zien';
 
   @override
   String get diaperLogTitle => 'Luier registreren';
@@ -334,6 +359,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsFeedIntervalMax => '6u';
+
+  @override
+  String get settingsFeedIntervalDisclaimer =>
+      'Voedingsintervallen zijn schattingen. Volg altijd het advies van uw zorgverlener.';
 
   @override
   String get settingsResetToRecommended => 'Terug naar aanbevolen';

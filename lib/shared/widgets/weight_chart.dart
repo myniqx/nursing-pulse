@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../data/models/weight_entry.dart';
+import '../../l10n/app_localizations.dart';
 import '../app_theme.dart';
 import 'np_card.dart';
 
@@ -11,6 +12,8 @@ class WeightChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     // Need at least 2 points for a line
     if (weights.length < 2) {
       return NpCard(
@@ -18,7 +21,7 @@ class WeightChart extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.stackLg),
             child: Text(
-              'Add at least 2 weight entries to see the chart',
+              l10n.weightMinEntries,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppColors.onSurfaceVariant,
@@ -50,7 +53,7 @@ class WeightChart extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Weight Progress',
+          l10n.weightProgress,
           style: Theme.of(
             context,
           ).textTheme.labelLarge?.copyWith(color: AppColors.onSurfaceVariant),

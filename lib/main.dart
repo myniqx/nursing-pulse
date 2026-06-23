@@ -1,13 +1,22 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
+import 'package:flutter/foundation.dart';
+import 'shared/dev_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/dev/mock_data_seeder.dart';
 import 'services/nursing_session_service.dart';
 import 'shared/app_theme.dart';
 import 'shared/widgets/np_top_app_bar.dart';
+import 'shared/widgets/nursing_badge.dart';
 import 'shared/widgets/np_bottom_nav_bar.dart';
 import 'features/home/home_screen.dart';
 import 'features/stats/stats_screen.dart';
@@ -21,6 +30,72 @@ void main() async {
   NursingSessionService.initForegroundTask();
   await MockDataSeeder.seedIfNeeded();
   runApp(const NursingPulseApp());
+}
+
+// ---------------------------------------------------------------------------
+// Overlay entry point — runs in a separate Flutter engine while the app is in
+// the background. MUST live in main.dart so the native side can resolve it and
+// tree-shaking keeps it.
+// ---------------------------------------------------------------------------
+
+@pragma('vm:entry-point')
+void overlayMain() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const _OverlayApp());
+}
+
+class _OverlayApp extends StatefulWidget {
+  const _OverlayApp();
+
+  @override
+  State<_OverlayApp> createState() => _OverlayAppState();
+}
+
+class _OverlayAppState extends State<_OverlayApp> {
+  int _elapsed = 0;
+  StreamSubscription? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = FlutterOverlayWindow.overlayListener.listen((data) {
+      if (data is Map && data['elapsed'] != null) {
+        setState(() => _elapsed = data['elapsed'] as int);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  String _fmt(int secs) {
+    final m = (secs ~/ 60).toString().padLeft(2, '0');
+    final s = (secs % 60).toString().padLeft(2, '0');
+    return '$m:$s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
+      home: Material(
+        color: Colors.transparent,
+        child: Center(
+          child: NursingBadge(
+            formattedTime: _fmt(_elapsed),
+            onFinish: () {
+              HapticFeedback.lightImpact();
+              IsolateNameServer.lookupPortByName('NP_MAIN')?.send('finish');
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class NursingPulseApp extends StatefulWidget {
@@ -93,7 +168,7 @@ class _RootShell extends StatefulWidget {
 
 class _RootShellState extends State<_RootShell> {
   int _currentIndex = 0;
-
+  final _screenshotController = ScreenshotController();
   static const _screens = [
     HomeScreen(),
     StatsScreen(),
@@ -103,23 +178,21 @@ class _RootShellState extends State<_RootShell> {
   @override
   void initState() {
     super.initState();
-    // Listen for overlay actions (finish / open_app)
-    FlutterOverlayWindow.overlayListener.listen((data) {
-      if (data is Map) {
-        final action = data['action'];
-        if (action == 'open_app') {
-          setState(() => _currentIndex = 0);
-        } else if (action == 'finish') {
-          // HomeScreen handles finish via ForegroundTask data channel
-        }
-      }
-    });
-    // Listen for foreground task finish button
     FlutterForegroundTask.addTaskDataCallback((data) {
       if (data == 'finish') {
         setState(() => _currentIndex = 0);
       }
     });
+  }
+
+  Future<void> _captureScreenshot() async {
+    final bytes = await _screenshotController.capture(pixelRatio: 1.0);
+    if (bytes == null) return;
+    final dir = Directory('screenshots');
+    if (!dir.existsSync()) dir.createSync();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final file = File('screenshots/screenshot_$timestamp.png');
+    await file.writeAsBytes(bytes);
   }
 
   void _openSettings() {
@@ -131,12 +204,21 @@ class _RootShellState extends State<_RootShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NpTopAppBar(onSettingsTap: _openSettings),
-      body: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
-          child: _screens[_currentIndex],
+      appBar: NpTopAppBar(
+        onSettingsTap: _openSettings,
+        onIconTap: isDev ? _captureScreenshot : null,
+      ),
+      body: Screenshot(
+        controller: _screenshotController,
+        child: ColoredBox(
+          color: AppColors.surface,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: _screens[_currentIndex],
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: NpBottomNavBar(

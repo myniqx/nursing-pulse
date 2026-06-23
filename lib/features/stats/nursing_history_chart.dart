@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
 import '../../data/models/weight_entry.dart';
+import '../../l10n/app_localizations.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 
@@ -167,13 +168,13 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
     return (count / 4).ceil();
   }
 
-  String get _rangeTitle {
+  String _rangeTitle(AppLocalizations l10n) {
     final today = _d(DateTime.now());
     final yesterday = today.subtract(const Duration(days: 1));
-    if (_range.start == today && _range.end == today) return 'Today';
-    if (_range.start == yesterday && _range.end == yesterday) return 'Yesterday';
-    if (_rangeDays == 7) return 'Last 7 days';
-    if (_rangeDays == 14) return 'Last 14 days';
+    if (_range.start == today && _range.end == today) return l10n.statsToday;
+    if (_range.start == yesterday && _range.end == yesterday) return l10n.statsYesterday;
+    if (_rangeDays == 7) return l10n.statsLast7Days;
+    if (_rangeDays == 14) return l10n.statsLast14Days;
     if (_range.start == _range.end) return _dayLabel(_range.start);
     return '${_dayLabel(_range.start)} – ${_dayLabel(_range.end)}';
   }
@@ -241,6 +242,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final bars = _cachedBars;
     final maxMin = _cachedMaxMin;
     final step = _labelStep(bars.length);
@@ -256,7 +258,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Nursing History',
+              Text(l10n.statsNursingHistory,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: AppColors.onSurfaceVariant,
                       )),
@@ -271,7 +273,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(_rangeTitle,
+                      Text(_rangeTitle(l10n),
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                 color: AppColors.primary,
                               )),
@@ -296,7 +298,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSpacing.stackLg),
                   child: Center(
-                    child: Text('No sessions in this period',
+                    child: Text(l10n.statsNoSessionsInPeriod,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: AppColors.onSurfaceVariant,
                             )),
@@ -318,11 +320,11 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _LegendDot(color: AppColors.primaryContainer, label: 'Daytime'),
+                    _LegendDot(color: AppColors.primaryContainer, label: l10n.statsDaytimeLabel),
                     const SizedBox(width: AppSpacing.gutter),
                     _LegendDot(
                         color: AppColors.tertiary.withValues(alpha: 0.65),
-                        label: 'Night (12a–6a)'),
+                        label: l10n.statsNightLabel),
                   ],
                 ),
               ],
@@ -342,21 +344,21 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                   children: [
                     Expanded(child: _MiniStatCard(
                       icon: Icons.water_drop_outlined,
-                      label: 'Total nursing',
+                      label: l10n.statsTotalNursingLabel,
                       value: _fmtMins(stats.totalMinutes),
                       color: AppColors.primary,
                     )),
                     const SizedBox(width: AppSpacing.stackMd),
                     Expanded(child: _MiniStatCard(
                       icon: Icons.child_care_outlined,
-                      label: 'Diapers',
+                      label: l10n.statsDiapersLabel,
                       value: stats.diaperCount.toString(),
                       color: AppColors.tertiary,
                     )),
                     const SizedBox(width: AppSpacing.stackMd),
                     Expanded(child: _MiniStatCard(
                       icon: Icons.monitor_weight_outlined,
-                      label: 'Weight',
+                      label: l10n.statsWeightLabel,
                       value: stats.hasWeightData
                           ? (stats.weightDiffGrams != null
                               ? '${stats.weightDiffGrams! >= 0 ? '+' : ''}${stats.weightDiffGrams}g'
@@ -632,13 +634,14 @@ class _RangePickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final today = DateTime.now();
     final yesterday = DateTime(today.year, today.month, today.day - 1);
     final chips = [
-      ('Today', _quick(1)),
-      ('Yesterday', DateTimeRange(start: yesterday, end: yesterday)),
-      ('Last 7 days', _quick(7)),
-      ('Last 14 days', _quick(14)),
+      (l10n.statsToday, _quick(1)),
+      (l10n.statsYesterday, DateTimeRange(start: yesterday, end: yesterday)),
+      (l10n.statsLast7Days, _quick(7)),
+      (l10n.statsLast14Days, _quick(14)),
     ];
 
     return Container(
@@ -652,7 +655,7 @@ class _RangePickerSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Select Period',
+          Text(l10n.statsSelectPeriod,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackLg),
           Wrap(
@@ -696,7 +699,7 @@ class _RangePickerSheet extends StatelessWidget {
                 foregroundColor: AppColors.primary,
               ),
               icon: const Icon(Icons.calendar_month_outlined, size: 18),
-              label: const Text('Custom range'),
+              label: Text(l10n.statsCustomRange),
               onPressed: () async {
                 Navigator.pop(context);
                 final picked = await showDateRangePicker(

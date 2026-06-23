@@ -161,13 +161,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsWeightLabel => 'Weight';
 
   @override
+  String get statsUnitMin => 'min';
+
+  @override
+  String get statsUnitTimes => 'times';
+
+  @override
   String get statsToday => 'Today';
+
+  @override
+  String get statsYesterday => 'Yesterday';
+
+  @override
+  String get statsLast7Days => 'Last 7 days';
+
+  @override
+  String get statsLast14Days => 'Last 14 days';
+
+  @override
+  String get statsDaytimeLabel => 'Daytime';
+
+  @override
+  String get statsDiapersLabel => 'Diapers';
 
   @override
   String get statsSelectPeriod => 'Select Period';
 
   @override
   String get statsCustomRange => 'Custom range';
+
+  @override
+  String get weightMinEntries =>
+      'Add at least 2 weight entries to see the chart';
 
   @override
   String get diaperLogTitle => 'Log Diaper';
@@ -333,6 +358,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFeedIntervalMax => '6h';
+
+  @override
+  String get settingsFeedIntervalDisclaimer =>
+      'Feeding intervals are estimates. Always follow your healthcare provider\'s advice.';
 
   @override
   String get settingsResetToRecommended => 'Reset to recommended';
