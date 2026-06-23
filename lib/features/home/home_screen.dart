@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/baby_profile.dart';
 import '../../data/models/diaper_log.dart';
