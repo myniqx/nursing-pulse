@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../app_theme.dart';
 
 class NpTopAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -25,7 +26,7 @@ class NpTopAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: 12),
           Text(
-            'Nursing Pulse',
+            AppLocalizations.of(context).appTitle,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: AppColors.primary,
                 ),

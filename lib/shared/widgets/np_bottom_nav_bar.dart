@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../app_theme.dart';
 
 class NpBottomNavBar extends StatelessWidget {
@@ -14,6 +15,7 @@ class NpBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
       child: BackdropFilter(
@@ -36,21 +38,21 @@ class NpBottomNavBar extends StatelessWidget {
                   _NavItem(
                     icon: Icons.home_outlined,
                     activeIcon: Icons.home,
-                    label: 'Home',
+                    label: l10n.navHome,
                     selected: currentIndex == 0,
                     onTap: () => onTap(0),
                   ),
                   _NavItem(
                     icon: Icons.analytics_outlined,
                     activeIcon: Icons.analytics,
-                    label: 'Stats',
+                    label: l10n.navStats,
                     selected: currentIndex == 1,
                     onTap: () => onTap(1),
                   ),
                   _NavItem(
                     icon: Icons.child_care_outlined,
                     activeIcon: Icons.child_care,
-                    label: 'Baby',
+                    label: l10n.navBaby,
                     selected: currentIndex == 2,
                     onTap: () => onTap(2),
                   ),

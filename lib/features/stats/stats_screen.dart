@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
 import '../../data/models/weight_entry.dart';
@@ -83,8 +84,10 @@ class _StatsScreenState extends State<StatsScreen> {
     return '$hour:$m $period';
   }
 
-  String _sideLabel(NursingSide side) =>
-      side == NursingSide.left ? 'Left Side' : 'Right Side';
+  String _sideLabel(NursingSide side) {
+    final l10n = AppLocalizations.of(context);
+    return side == NursingSide.left ? l10n.statsLeftSide : l10n.statsRightSide;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,11 +162,12 @@ class _SummaryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Today's Summary",
+          l10n.statsTodaySummary,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: AppColors.onSurfaceVariant,
               ),
@@ -171,7 +175,7 @@ class _SummaryHeader extends StatelessWidget {
         const SizedBox(height: AppSpacing.base),
         Text(
           totalMinutes == 0
-              ? 'No sessions yet'
+              ? l10n.statsNoSessionsYet
               : '${totalMinutes ~/ 60 > 0 ? '${totalMinutes ~/ 60}h ' : ''}${totalMinutes % 60 > 0 ? '${totalMinutes % 60}m' : ''}',
           style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 color: AppColors.primary,
@@ -179,7 +183,7 @@ class _SummaryHeader extends StatelessWidget {
         ),
         if (totalMinutes > 0)
           Text(
-            'total nursing today',
+            l10n.statsTotalNursing,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -223,7 +227,7 @@ class _LateralBalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'LATERAL BALANCE',
+                AppLocalizations.of(context).statsLateralBalance,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: AppColors.primary,
                       letterSpacing: 1.2,
@@ -260,7 +264,7 @@ class _LateralBalanceCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Left Side',
+                    Text(AppLocalizations.of(context).statsLeftSide,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: AppColors.onSurfaceVariant,
                             )),
@@ -287,7 +291,7 @@ class _LateralBalanceCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('Right Side',
+                    Text(AppLocalizations.of(context).statsRightSide,
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: AppColors.onSurfaceVariant,
                             )),
@@ -339,7 +343,7 @@ class _SessionHistoryCard extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
-            'Today\'s Sessions',
+            AppLocalizations.of(context).statsTodaySessions,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -353,7 +357,7 @@ class _SessionHistoryCard extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(AppSpacing.stackLg),
                     child: Text(
-                      'No sessions recorded today',
+                      AppLocalizations.of(context).statsNoSessionsToday,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.onSurfaceVariant,
                           ),
@@ -411,14 +415,14 @@ class _SessionHistoryCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${s.duration.inMinutes} min',
+                                      AppLocalizations.of(context).statsDuration(s.duration.inMinutes).replaceAll('Duration: ', ''),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelLarge
                                           ?.copyWith(color: AppColors.primary),
                                     ),
                                     Text(
-                                      'hold to edit',
+                                      AppLocalizations.of(context).statsHoldToEdit,
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelSmall
@@ -461,7 +465,7 @@ class _InsightsBento extends StatelessWidget {
         Expanded(
           child: NpStatTile(
             icon: Icons.schedule,
-            label: 'Avg. Duration',
+            label: AppLocalizations.of(context).statsAvgDuration,
             value: avgMinutes == 0 ? '--' : avgMinutes.toStringAsFixed(1),
             unit: 'min',
             iconColor: AppColors.primary,
@@ -473,7 +477,7 @@ class _InsightsBento extends StatelessWidget {
         Expanded(
           child: NpStatTile(
             icon: Icons.nightlight_outlined,
-            label: 'Night Feeds',
+            label: AppLocalizations.of(context).statsNightFeeds,
             value: nightFeeds.toString(),
             unit: 'times',
             iconColor: AppColors.tertiary,
@@ -543,11 +547,11 @@ class _EditSessionSheetState extends State<_EditSessionSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Edit Session',
+          Text(AppLocalizations.of(context).statsEditSession,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackLg),
           Text(
-            'Adjust end time if you forgot to stop the timer',
+            AppLocalizations.of(context).statsEditHint,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -560,7 +564,7 @@ class _EditSessionSheetState extends State<_EditSessionSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Start',
+                      Text(AppLocalizations.of(context).statsStart,
                           style: Theme.of(context).textTheme.labelSmall?.copyWith(
                                 color: AppColors.onSurfaceVariant,
                               )),
@@ -582,7 +586,7 @@ class _EditSessionSheetState extends State<_EditSessionSheet> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('End (tap to change)',
+                        Text(AppLocalizations.of(context).statsEnd,
                             style: Theme.of(context)
                                 .textTheme
                                 .labelSmall
@@ -602,7 +606,7 @@ class _EditSessionSheetState extends State<_EditSessionSheet> {
           ),
           const SizedBox(height: AppSpacing.stackMd),
           Text(
-            'Duration: $durMin min',
+            AppLocalizations.of(context).statsDuration(durMin),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -620,7 +624,7 @@ class _EditSessionSheetState extends State<_EditSessionSheet> {
                 widget.onSave(widget.session.copyWith(endTime: _endTime));
                 Navigator.pop(context);
               },
-              child: const Text('Save'),
+              child: Text(AppLocalizations.of(context).save),
             ),
           ),
         ],

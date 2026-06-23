@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/baby_profile.dart';
 import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
@@ -69,7 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _startTicker();
   }
 
-  // Sol→Sağ veya Sağ→Sol geçişi: aktif seansı kapat, yeni tarafı başlat
   Future<void> _switchSide(NursingSide newSide) async {
     if (_activeSession == null || _activeSession!.side == newSide) return;
     HapticFeedback.lightImpact();
@@ -116,42 +116,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 
-  String _lastNursingText() {
+  String _lastNursingText(AppLocalizations l10n) {
     final completed = _sessions.where((s) => !s.isActive).toList();
-    if (completed.isEmpty) return 'No sessions yet';
+    if (completed.isEmpty) return l10n.lastNursingNoSessions;
     final last = completed.first;
     final ago = DateTime.now().difference(last.endTime!);
-    final side = last.side == NursingSide.left ? 'Left side' : 'Right side';
-    if (ago.inMinutes < 60) return '${ago.inMinutes} min ago • $side';
-    final h = ago.inHours;
-    return '$h ${h == 1 ? 'hour' : 'hours'} ago • $side';
+    final side = last.side == NursingSide.left ? l10n.sideLeftFull : l10n.sideRightFull;
+    if (ago.inMinutes < 60) {
+      return l10n.lastNursingMinAgo(ago.inMinutes, side);
+    }
+    return l10n.lastNursingHourAgo(ago.inHours, side);
   }
 
-  String? get _nextFeedSuggestion {
+  String? _nextFeedSuggestion(AppLocalizations l10n) {
     final completed = _sessions.where((s) => !s.isActive).toList();
     if (completed.isEmpty) return null;
 
     final lastEnd = completed.first.endTime!;
     final intervalHours = _profile?.effectiveIntervalHours ?? 3.0;
-    final suggested = lastEnd.add(Duration(
-      minutes: (intervalHours * 60).round(),
-    ));
+    final suggested = lastEnd.add(Duration(minutes: (intervalHours * 60).round()));
 
-    // If suggested time is in the past, show "now"
-    if (suggested.isBefore(DateTime.now())) return 'Now';
+    if (suggested.isBefore(DateTime.now())) return l10n.diaperJustNow;
 
     final h = suggested.hour % 12 == 0 ? 12 : suggested.hour % 12;
     final m = suggested.minute.toString().padLeft(2, '0');
     final period = suggested.hour >= 12 ? 'PM' : 'AM';
-    return 'Around $h:$m $period';
+    return l10n.nextFeedAround('$h:$m $period');
   }
 
   int get _todayDiaperCount {
     final today = DateTime.now();
-    return _diapers.where((d) =>
-        d.time.year == today.year &&
-        d.time.month == today.month &&
-        d.time.day == today.day).length;
+    return _diapers
+        .where((d) =>
+            d.time.year == today.year &&
+            d.time.month == today.month &&
+            d.time.day == today.day)
+        .length;
   }
 
   int get _dailyTotalMinutes {
@@ -173,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isNursing = _activeSession != null;
     final elapsed = isNursing ? _activeSession!.duration : Duration.zero;
 
@@ -185,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: Column(
         children: [
-          _LastNursingNote(text: _lastNursingText()),
+          _LastNursingNote(text: _lastNursingText(l10n)),
           const SizedBox(height: AppSpacing.stackLg),
           _TimerSection(
             isNursing: isNursing,
@@ -200,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _StatsGrid(
             dailyTotalMinutes: _dailyTotalMinutes,
             todayDiaperCount: _todayDiaperCount,
-            nextFeedSuggestion: _nextFeedSuggestion,
+            nextFeedSuggestion: _nextFeedSuggestion(l10n),
           ),
         ],
       ),
@@ -214,6 +215,7 @@ class _LastNursingNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return NpCard(
       child: Row(
         children: [
@@ -232,17 +234,14 @@ class _LastNursingNote extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'LAST NURSING',
+                  l10n.lastNursingLabel,
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color: AppColors.onSurfaceVariant,
                         letterSpacing: 1.2,
                       ),
                 ),
                 const SizedBox(height: AppSpacing.stackSm),
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                Text(text, style: Theme.of(context).textTheme.bodyMedium),
               ],
             ),
           ),
@@ -273,6 +272,7 @@ class _TimerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     const ringSize = 280.0;
     const strokeWidth = 8.0;
     const radius = (ringSize / 2) - strokeWidth;
@@ -321,7 +321,7 @@ class _TimerSection extends StatelessWidget {
                         const Icon(Icons.play_arrow, size: 48, color: AppColors.onPrimary),
                         const SizedBox(height: AppSpacing.stackSm),
                         Text(
-                          'Start Nursing',
+                          l10n.startNursing,
                           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                 color: AppColors.onPrimary,
                               ),
@@ -336,7 +336,9 @@ class _TimerSection extends StatelessWidget {
                         ),
                         const SizedBox(height: AppSpacing.stackSm),
                         Text(
-                          selectedSide == NursingSide.left ? 'Left side' : 'Right side',
+                          selectedSide == NursingSide.left
+                              ? l10n.sideLeftFull
+                              : l10n.sideRightFull,
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                                 color: AppColors.onPrimaryContainer.withValues(alpha: 0.80),
                               ),
@@ -360,7 +362,7 @@ class _TimerSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
               child: Text(
-                'Finish Session',
+                l10n.finishSession,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                       color: AppColors.onTertiaryContainer,
                     ),
@@ -373,13 +375,13 @@ class _TimerSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             NpChip(
-              label: 'Left',
+              label: l10n.sideLeft,
               selected: selectedSide == NursingSide.left,
               onTap: () => onSideChanged(NursingSide.left),
             ),
             const SizedBox(width: AppSpacing.gutter),
             NpChip(
-              label: 'Right',
+              label: l10n.sideRight,
               selected: selectedSide == NursingSide.right,
               onTap: () => onSideChanged(NursingSide.right),
             ),
@@ -448,6 +450,7 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         Row(
@@ -455,7 +458,7 @@ class _StatsGrid extends StatelessWidget {
             Expanded(
               child: NpStatTile(
                 icon: Icons.water_drop_outlined,
-                label: 'Daily Total',
+                label: l10n.dailyTotal,
                 value: dailyTotalMinutes.toString(),
                 unit: 'min',
                 iconColor: AppColors.primary,
@@ -465,9 +468,9 @@ class _StatsGrid extends StatelessWidget {
             Expanded(
               child: NpStatTile(
                 icon: Icons.child_care_outlined,
-                label: 'Diapers',
+                label: l10n.diapers,
                 value: todayDiaperCount.toString(),
-                unit: 'today',
+                unit: l10n.navHome == 'Home' ? 'today' : '',
                 iconColor: AppColors.tertiary,
               ),
             ),
@@ -483,19 +486,16 @@ class _StatsGrid extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Next suggested feed',
+                    l10n.nextSuggestedFeed,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppColors.onSurfaceVariant,
                         ),
                   ),
                   const SizedBox(height: AppSpacing.stackSm),
                   Text(
-                    nextFeedSuggestion ?? 'No sessions yet',
+                    nextFeedSuggestion ?? l10n.lastNursingNoSessions,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: nextFeedSuggestion == 'Now'
-                              ? AppColors.tertiary
-                              : null,
                         ),
                   ),
                 ],
