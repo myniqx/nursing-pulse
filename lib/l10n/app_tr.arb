@@ -81,6 +81,11 @@
 
   "settingsLanguage": "Dil",
   "settingsLanguageSystem": "Sistem varsayılanı",
+  "settingsNotifications": "Bildirimler",
+  "settingsNotifTimer": "Bildirimlerde zamanlayıcıyı göster",
+  "settingsNotifTimerHint": "Emzirme sırasında bildirim çubuğunda Bitir butonu ile kalıcı bildirim gösterir",
+  "settingsOverlay": "Yüzen zamanlayıcı",
+  "settingsOverlayHint": "Emzirme sırasında diğer uygulamaların üzerinde rozet gösterir — bindirme izni gerektirir",
 
   "settingsBabyProfile": "Bebek Profili",
   "settingsBabyProfileHint": "Önerilen besleme aralığını hesaplamak için kullanılır",

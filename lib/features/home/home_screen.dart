@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/baby_profile.dart';
 import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
 import '../../data/repositories/baby_repository.dart';
 import '../../data/repositories/session_repository.dart';
+import '../../services/nursing_session_service.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 import '../../shared/widgets/np_chip.dart';
@@ -35,6 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _load();
+    // Finish triggered from notification button or overlay
+    FlutterForegroundTask.addTaskDataCallback(_onForegroundData);
+  }
+
+  void _onForegroundData(dynamic data) {
+    if (data == 'finish' && _activeSession != null) {
+      _finishNursing();
+    }
   }
 
   Future<void> _load() async {
@@ -68,6 +78,12 @@ class _HomeScreenState extends State<HomeScreen> {
     await _repo.startSession(session);
     setState(() => _activeSession = session);
     _startTicker();
+    if (mounted) {
+      await NursingSessionService.instance.start(
+        elapsedSeconds: 0,
+        context: context,
+      );
+    }
   }
 
   Future<void> _switchSide(NursingSide newSide) async {
@@ -100,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _activeSession = null;
       _sessions = [finished, ...sessions.where((s) => s.id != finished.id)];
     });
+    await NursingSessionService.instance.stop();
   }
 
   Future<void> _selectSide(NursingSide side) async {
@@ -168,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _ticker?.cancel();
+    FlutterForegroundTask.removeTaskDataCallback(_onForegroundData);
     super.dispose();
   }
 

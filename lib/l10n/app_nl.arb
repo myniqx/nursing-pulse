@@ -81,6 +81,11 @@
 
   "settingsLanguage": "Taal",
   "settingsLanguageSystem": "Systeemstandaard",
+  "settingsNotifications": "Meldingen",
+  "settingsNotifTimer": "Timer in meldingenbalk tonen",
+  "settingsNotifTimerHint": "Toont een permanente melding tijdens het voeden met een Stoppen-knop",
+  "settingsOverlay": "Zwevende timer",
+  "settingsOverlayHint": "Toont een badge over andere apps tijdens het voeden — vereist overlay-toestemming",
 
   "settingsBabyProfile": "Babyprofiel",
   "settingsBabyProfileHint": "Wordt gebruikt om aanbevolen voedingsintervallen te berekenen",

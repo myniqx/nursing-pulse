@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/dev/mock_data_seeder.dart';
+import 'services/nursing_session_service.dart';
 import 'shared/app_theme.dart';
 import 'shared/widgets/np_top_app_bar.dart';
 import 'shared/widgets/np_bottom_nav_bar.dart';
@@ -15,6 +18,7 @@ const _kLocaleKey = 'np_locale';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NursingSessionService.initForegroundTask();
   await MockDataSeeder.seedIfNeeded();
   runApp(const NursingPulseApp());
 }
@@ -95,6 +99,28 @@ class _RootShellState extends State<_RootShell> {
     StatsScreen(),
     BabyScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen for overlay actions (finish / open_app)
+    FlutterOverlayWindow.overlayListener.listen((data) {
+      if (data is Map) {
+        final action = data['action'];
+        if (action == 'open_app') {
+          setState(() => _currentIndex = 0);
+        } else if (action == 'finish') {
+          // HomeScreen handles finish via ForegroundTask data channel
+        }
+      }
+    });
+    // Listen for foreground task finish button
+    FlutterForegroundTask.addTaskDataCallback((data) {
+      if (data == 'finish') {
+        setState(() => _currentIndex = 0);
+      }
+    });
+  }
 
   void _openSettings() {
     Navigator.of(context).push(

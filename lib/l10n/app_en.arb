@@ -140,6 +140,11 @@
 
   "settingsLanguage": "Language",
   "settingsLanguageSystem": "System default",
+  "settingsNotifications": "Notifications",
+  "settingsNotifTimer": "Show timer in notification bar",
+  "settingsNotifTimerHint": "Displays a persistent notification while nursing with a Finish button",
+  "settingsOverlay": "Floating timer",
+  "settingsOverlayHint": "Shows a badge over other apps while nursing — requires overlay permission",
 
   "settingsBabyProfile": "Baby Profile",
   "settingsBabyProfileHint": "Used to calculate recommended feed intervals",

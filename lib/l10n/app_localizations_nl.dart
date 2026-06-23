@@ -249,6 +249,23 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsLanguageSystem => 'Systeemstandaard';
 
   @override
+  String get settingsNotifications => 'Meldingen';
+
+  @override
+  String get settingsNotifTimer => 'Timer in meldingenbalk tonen';
+
+  @override
+  String get settingsNotifTimerHint =>
+      'Toont een permanente melding tijdens het voeden met een Stoppen-knop';
+
+  @override
+  String get settingsOverlay => 'Zwevende timer';
+
+  @override
+  String get settingsOverlayHint =>
+      'Toont een badge over andere apps tijdens het voeden — vereist overlay-toestemming';
+
+  @override
   String get settingsBabyProfile => 'Babyprofiel';
 
   @override

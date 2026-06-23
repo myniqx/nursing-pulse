@@ -520,6 +520,36 @@ abstract class AppLocalizations {
   /// **'System default'**
   String get settingsLanguageSystem;
 
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsNotifTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Show timer in notification bar'**
+  String get settingsNotifTimer;
+
+  /// No description provided for @settingsNotifTimerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Displays a persistent notification while nursing with a Finish button'**
+  String get settingsNotifTimerHint;
+
+  /// No description provided for @settingsOverlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Floating timer'**
+  String get settingsOverlay;
+
+  /// No description provided for @settingsOverlayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shows a badge over other apps while nursing — requires overlay permission'**
+  String get settingsOverlayHint;
+
   /// No description provided for @settingsBabyProfile.
   ///
   /// In en, this message translates to:

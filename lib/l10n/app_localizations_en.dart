@@ -248,6 +248,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageSystem => 'System default';
 
   @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsNotifTimer => 'Show timer in notification bar';
+
+  @override
+  String get settingsNotifTimerHint =>
+      'Displays a persistent notification while nursing with a Finish button';
+
+  @override
+  String get settingsOverlay => 'Floating timer';
+
+  @override
+  String get settingsOverlayHint =>
+      'Shows a badge over other apps while nursing — requires overlay permission';
+
+  @override
   String get settingsBabyProfile => 'Baby Profile';
 
   @override

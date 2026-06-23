@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nursing_pulse/l10n/app_localizations.dart';
 import 'package:nursing_pulse/main.dart';
+import 'package:nursing_pulse/services/nursing_session_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/dev/mock_data_seeder.dart';
 import '../../data/models/baby_profile.dart';
@@ -178,6 +179,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _LanguageSection(l10n: l10n),
+          const SizedBox(height: AppSpacing.stackLg),
+          _NotificationsSection(l10n: l10n),
           const SizedBox(height: AppSpacing.stackLg),
           Text(l10n.settingsBabyProfile,
               style: Theme.of(context).textTheme.headlineMedium),
@@ -439,6 +442,135 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Notifications Section
+// ---------------------------------------------------------------------------
+
+class _NotificationsSection extends StatefulWidget {
+  const _NotificationsSection({required this.l10n});
+  final AppLocalizations l10n;
+
+  @override
+  State<_NotificationsSection> createState() => _NotificationsSectionState();
+}
+
+class _NotificationsSectionState extends State<_NotificationsSection> {
+  bool _notif = true;
+  bool _overlay = true;
+  final _svc = NursingSessionService.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final n = await _svc.isNotifEnabled;
+    final o = await _svc.isOverlayEnabled;
+    setState(() {
+      _notif = n;
+      _overlay = o;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.settingsNotifications,
+            style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: AppSpacing.stackMd),
+        NpCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              _ToggleTile(
+                icon: Icons.notifications_outlined,
+                title: l10n.settingsNotifTimer,
+                subtitle: l10n.settingsNotifTimerHint,
+                value: _notif,
+                onChanged: (v) async {
+                  await _svc.setNotifEnabled(v);
+                  setState(() => _notif = v);
+                },
+              ),
+              const Divider(color: AppColors.surfaceContainerHigh, height: 1),
+              _ToggleTile(
+                icon: Icons.picture_in_picture_alt_outlined,
+                title: l10n.settingsOverlay,
+                subtitle: l10n.settingsOverlayHint,
+                value: _overlay,
+                onChanged: (v) async {
+                  await _svc.setOverlayEnabled(v);
+                  setState(() => _overlay = v);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ToggleTile extends StatelessWidget {
+  const _ToggleTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.stackLg, vertical: 14),
+      child: Row(
+        children: [
+          Icon(icon,
+              size: 20,
+              color: value ? AppColors.primary : AppColors.onSurfaceVariant),
+          const SizedBox(width: AppSpacing.stackMd),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        )),
+                const SizedBox(height: 2),
+                Text(subtitle,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                        )),
+              ],
+            ),
+          ),
+          const SizedBox(width: AppSpacing.stackMd),
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeThumbColor: AppColors.primary,
+            activeTrackColor: AppColors.primaryFixed,
+          ),
         ],
       ),
     );

@@ -249,6 +249,23 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsLanguageSystem => 'Sistem varsayılanı';
 
   @override
+  String get settingsNotifications => 'Bildirimler';
+
+  @override
+  String get settingsNotifTimer => 'Bildirimlerde zamanlayıcıyı göster';
+
+  @override
+  String get settingsNotifTimerHint =>
+      'Emzirme sırasında bildirim çubuğunda Bitir butonu ile kalıcı bildirim gösterir';
+
+  @override
+  String get settingsOverlay => 'Yüzen zamanlayıcı';
+
+  @override
+  String get settingsOverlayHint =>
+      'Emzirme sırasında diğer uygulamaların üzerinde rozet gösterir — bindirme izni gerektirir';
+
+  @override
   String get settingsBabyProfile => 'Bebek Profili';
 
   @override
