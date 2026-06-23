@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
+import 'package:nursing_pulse/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/dev/mock_data_seeder.dart';
 import '../../data/models/baby_profile.dart';
@@ -77,11 +79,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _formatDate(DateTime dt) =>
       '${dt.day.toString().padLeft(2, '0')}/${dt.month.toString().padLeft(2, '0')}/${dt.year}';
 
-  String _ageLabel(DateTime birth) {
+  String _ageLabel(BuildContext context, DateTime birth) {
+    final l10n = AppLocalizations.of(context);
     final weeks = DateTime.now().difference(birth).inDays ~/ 7;
-    if (weeks < 4) return '$weeks weeks old';
+    if (weeks < 4) return l10n.weeksOld(weeks);
     final months = DateTime.now().difference(birth).inDays ~/ 30;
-    return '$months months old';
+    return l10n.monthsOld(months);
   }
 
   // Slider goes 1.0–6.0 h in 0.5 steps
@@ -97,21 +100,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _clearStats() async {
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Clear all stats?'),
-        content: const Text(
-            'This will permanently delete all nursing sessions, diapers and weight entries. Baby profile will be kept.'),
+        title: Text(l10n.settingsClearStatsConfirmTitle),
+        content: Text(l10n.settingsClearStatsConfirmHint),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.settingsClearStatsCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.error),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Clear'),
+            child: Text(l10n.settingsClearStatsConfirm),
           ),
         ],
       ),
@@ -162,6 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             .recommendedIntervalHours
         : null;
 
+    final l10n = AppLocalizations.of(context);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.containerPadding,
@@ -172,11 +177,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Baby Profile',
+          _LanguageSection(l10n: l10n),
+          const SizedBox(height: AppSpacing.stackLg),
+          Text(l10n.settingsBabyProfile,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackSm),
           Text(
-            'Used to calculate recommended feed intervals',
+            l10n.settingsBabyProfileHint,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -188,7 +195,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Name
-                Text("Baby's name",
+                Text(l10n.settingsBabyName,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: AppColors.onSurfaceVariant,
                         )),
@@ -197,7 +204,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
                   decoration: InputDecoration(
-                    hintText: 'e.g. Emma',
+                    hintText: l10n.settingsBabyNameHint,
                     filled: true,
                     fillColor: AppColors.primaryFixed.withValues(alpha: 0.20),
                     border: OutlineInputBorder(
@@ -209,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: AppSpacing.stackLg),
 
                 // Birth date
-                Text('Date of birth',
+                Text(l10n.settingsBirthDate,
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
                           color: AppColors.onSurfaceVariant,
                         )),
@@ -232,7 +239,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Text(
                           _birthDate != null
                               ? _formatDate(_birthDate!)
-                              : 'Select date',
+                              : l10n.settingsBirthDateSelect,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: _birthDate != null
@@ -254,7 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.full),
                     ),
                     child: Text(
-                      _ageLabel(_birthDate!),
+                      _ageLabel(context, _birthDate!),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             color: AppColors.primary,
                           ),
@@ -269,7 +276,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Feed interval',
+                    Text(l10n.settingsFeedIntervalLabel,
                         style:
                             Theme.of(context).textTheme.labelLarge?.copyWith(
                                   color: AppColors.onSurfaceVariant,
@@ -278,7 +285,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       GestureDetector(
                         onTap: () => setState(() => _customInterval = null),
                         child: Text(
-                          'Reset to recommended',
+                          l10n.settingsResetToRecommended,
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
@@ -291,8 +298,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if (recommended != null) ...[
                   Text(
                     _customInterval == null
-                        ? 'Recommended for age: every ${recommended.$1}–${recommended.$2}h'
-                        : 'Custom: every ${_intervalLabel(_customInterval!)}',
+                        ? l10n.settingsRecommendedForAge(recommended.$1, recommended.$2)
+                        : l10n.settingsCustomInterval(_intervalLabel(_customInterval!)),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: _customInterval == null
                               ? AppColors.onSurfaceVariant
@@ -327,13 +334,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('1h',
+                      Text(l10n.settingsFeedIntervalMin,
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
                               ?.copyWith(
                                   color: AppColors.onSurfaceVariant)),
-                      Text('6h',
+                      Text(l10n.settingsFeedIntervalMax,
                           style: Theme.of(context)
                               .textTheme
                               .labelSmall
@@ -343,7 +350,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ] else ...[
                   Text(
-                    'Enter birth date to see recommendation',
+                    l10n.settingsEnterBirthDate,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: AppColors.onSurfaceVariant,
                         ),
@@ -371,7 +378,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           : AppColors.onPrimary,
                     ),
                     label: Text(
-                      _saved ? 'Saved!' : 'Save Profile',
+                      _saved ? l10n.settingsSaved : l10n.settingsSaveProfile,
                       style: TextStyle(
                         color: _saved
                             ? AppColors.onPrimaryContainer
@@ -403,7 +410,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           strokeWidth: 2, color: AppColors.error),
                     )
                   : const Icon(Icons.delete_outline),
-              label: const Text('Clear All Stats'),
+              label: Text(l10n.settingsClearStats),
             ),
           ),
           // Seed button — dev only
@@ -433,6 +440,116 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Language Section
+// ---------------------------------------------------------------------------
+
+class _LanguageSection extends StatelessWidget {
+  const _LanguageSection({required this.l10n});
+
+  final AppLocalizations l10n;
+
+  static const _languages = [
+    (code: 'en', label: 'English'),
+    (code: 'tr', label: 'Türkçe'),
+    (code: 'nl', label: 'Nederlands'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final appState = NursingPulseApp.of(context);
+    final currentCode = Localizations.localeOf(context).languageCode;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.settingsLanguage,
+            style: Theme.of(context).textTheme.headlineMedium),
+        const SizedBox(height: AppSpacing.stackMd),
+        NpCard(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              _LanguageTile(
+                label: l10n.settingsLanguageSystem,
+                selected: false,
+                isSystem: true,
+                onTap: () => appState.setLocale(null),
+              ),
+              const Divider(color: AppColors.surfaceContainerHigh, height: 1),
+              ..._languages.asMap().entries.map((entry) {
+                final i = entry.key;
+                final lang = entry.value;
+                return Column(
+                  children: [
+                    _LanguageTile(
+                      label: lang.label,
+                      selected: currentCode == lang.code,
+                      onTap: () => appState.setLocale(Locale(lang.code)),
+                    ),
+                    if (i < _languages.length - 1)
+                      const Divider(
+                          color: AppColors.surfaceContainerHigh, height: 1),
+                  ],
+                );
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _LanguageTile extends StatelessWidget {
+  const _LanguageTile({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+    this.isSystem = false,
+  });
+
+  final String label;
+  final bool selected;
+  final bool isSystem;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.stackLg, vertical: 14),
+        child: Row(
+          children: [
+            Icon(
+              isSystem ? Icons.language : Icons.translate,
+              size: 20,
+              color: selected ? AppColors.primary : AppColors.onSurfaceVariant,
+            ),
+            const SizedBox(width: AppSpacing.stackMd),
+            Expanded(
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color:
+                          selected ? AppColors.primary : AppColors.onSurface,
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+              ),
+            ),
+            if (selected)
+              const Icon(Icons.check, size: 18, color: AppColors.primary),
+          ],
+        ),
       ),
     );
   }

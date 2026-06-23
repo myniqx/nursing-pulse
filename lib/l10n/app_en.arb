@@ -1,0 +1,196 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Nursing Pulse",
+  "navHome": "Home",
+  "navStats": "Stats",
+  "navBaby": "Baby",
+  "settingsTitle": "Settings",
+
+  "lastNursingLabel": "LAST NURSING",
+  "lastNursingNoSessions": "No sessions yet",
+  "lastNursingAgo": "{time} ago • {side}",
+  "@lastNursingAgo": {
+    "placeholders": {
+      "time": { "type": "String" },
+      "side": { "type": "String" }
+    }
+  },
+  "lastNursingMinAgo": "{minutes} min ago • {side}",
+  "@lastNursingMinAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" },
+      "side": { "type": "String" }
+    }
+  },
+  "lastNursingHourAgo": "{hours} {hours, plural, =1{hour} other{hours}} ago • {side}",
+  "@lastNursingHourAgo": {
+    "placeholders": {
+      "hours": { "type": "int" },
+      "side": { "type": "String" }
+    }
+  },
+
+  "sideLeft": "Left",
+  "sideRight": "Right",
+  "sideLeftFull": "Left side",
+  "sideRightFull": "Right side",
+
+  "startNursing": "Start Nursing",
+  "finishSession": "Finish Session",
+  "nursing": "Nursing...",
+
+  "nextSuggestedFeed": "Next suggested feed",
+  "nextFeedAround": "Around {time}",
+  "@nextFeedAround": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+
+  "dailyTotal": "Daily Total",
+  "diapers": "Diapers",
+  "diapersToday": "{count} today",
+  "@diapersToday": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "diapersMoreInStats": "+{count} more today — full history in Stats",
+  "@diapersMoreInStats": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "statsTodaySummary": "Today's Summary",
+  "statsTotalNursing": "total nursing today",
+  "statsNoSessionsYet": "No sessions yet",
+  "statsLateralBalance": "LATERAL BALANCE",
+  "statsLeftSide": "Left Side",
+  "statsRightSide": "Right Side",
+  "statsTodaySessions": "Today's Sessions",
+  "statsNoSessionsToday": "No sessions recorded today",
+  "statsAvgDuration": "Avg. Duration",
+  "statsNightFeeds": "Night Feeds",
+  "statsHoldToEdit": "hold to edit",
+  "statsEditSession": "Edit Session",
+  "statsEditHint": "Adjust end time if you forgot to stop the timer",
+  "statsStart": "Start",
+  "statsEnd": "End (tap to change)",
+  "statsDuration": "Duration: {minutes} min",
+  "@statsDuration": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "statsNursingHistory": "Nursing History",
+  "statsNoSessionsInPeriod": "No sessions in this period",
+  "statsNightLabel": "Night (12a–6a)",
+  "statsTotalNursingLabel": "Total nursing",
+  "statsWeightLabel": "Weight",
+  "statsToday": "Today",
+  "statsSelectPeriod": "Select Period",
+  "statsCustomRange": "Custom range",
+
+  "diaperLogTitle": "Log Diaper",
+  "diaperType": "Type",
+  "diaperTime": "Time",
+  "diaperWet": "Wet",
+  "diaperDirty": "Dirty",
+  "diaperBoth": "Both",
+  "diaperJustNow": "Just now",
+  "diaperMinAgo": "{minutes} min ago",
+  "@diaperMinAgo": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "diaperHourAgo": "{hours}h ago",
+  "@diaperHourAgo": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "diaperNow": "Now",
+  "diaperChangeTime": "Change",
+
+  "weightTitle": "Weight",
+  "weightLogButton": "Log weight",
+  "weightEmpty": "No weight entries yet.\nTap \"Log weight\" to add the first one.",
+  "weightLatest": "Latest weight",
+  "weightSinceLast": "{sign}{grams}g since last entry",
+  "@weightSinceLast": {
+    "placeholders": {
+      "sign": { "type": "String" },
+      "grams": { "type": "int" }
+    }
+  },
+  "weightLogTitle": "Log Weight",
+  "weightMoreInStats": "+{count} more — full history in Stats",
+  "@weightMoreInStats": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "weightProgress": "Weight Progress",
+
+  "save": "Save",
+  "cancel": "Cancel",
+
+  "settingsLanguage": "Language",
+  "settingsLanguageSystem": "System default",
+
+  "settingsBabyProfile": "Baby Profile",
+  "settingsBabyProfileHint": "Used to calculate recommended feed intervals",
+  "settingsBabyName": "Baby's name",
+  "settingsBabyNameHint": "e.g. Emma",
+  "settingsBirthDate": "Date of birth",
+  "settingsBirthDateSelect": "Select date",
+  "settingsSaveProfile": "Save Profile",
+  "settingsSaved": "Saved!",
+  "settingsFeedInterval": "Recommended feed interval",
+  "settingsFeedIntervalEvery": "Every {min}–{max} hours",
+  "@settingsFeedIntervalEvery": {
+    "placeholders": {
+      "min": { "type": "double" },
+      "max": { "type": "double" }
+    }
+  },
+  "settingsClearStats": "Clear All Stats",
+  "settingsClearStatsConfirmTitle": "Clear all stats?",
+  "settingsClearStatsConfirmHint": "This will delete all nursing sessions, diapers and weight entries. This cannot be undone.",
+  "settingsClearStatsCancel": "Cancel",
+  "settingsClearStatsConfirm": "Clear",
+  "settingsFeedIntervalLabel": "Feed interval",
+  "settingsFeedIntervalMin": "1h",
+  "settingsFeedIntervalMax": "6h",
+  "settingsResetToRecommended": "Reset to recommended",
+  "settingsRecommendedForAge": "Recommended for age: every {min}–{max}h",
+  "@settingsRecommendedForAge": {
+    "placeholders": {
+      "min": { "type": "double" },
+      "max": { "type": "double" }
+    }
+  },
+  "settingsCustomInterval": "Custom: every {interval}",
+  "@settingsCustomInterval": {
+    "placeholders": {
+      "interval": { "type": "String" }
+    }
+  },
+  "settingsEnterBirthDate": "Enter birth date to see recommendation",
+
+  "weeksOld": "{weeks} {weeks, plural, =1{week} other{weeks}} old",
+  "@weeksOld": {
+    "placeholders": {
+      "weeks": { "type": "int" }
+    }
+  },
+  "monthsOld": "{months} {months, plural, =1{month} other{months}} old",
+  "@monthsOld": {
+    "placeholders": {
+      "months": { "type": "int" }
+    }
+  }
+}

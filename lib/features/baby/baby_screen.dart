@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nursing_pulse/l10n/app_localizations.dart';
 import '../../data/models/diaper_log.dart';
 import '../../data/models/weight_entry.dart';
 import '../../data/repositories/baby_repository.dart';
@@ -145,17 +146,21 @@ class _DiaperSection extends StatelessWidget {
   final void Function([DiaperType?]) onAddTap;
   final void Function(String) onDelete;
 
-  String _typeLabel(DiaperType t) => switch (t) {
-        DiaperType.wet => 'Wet',
-        DiaperType.dirty => 'Dirty',
-        DiaperType.both => 'Both',
-      };
+  String _typeLabel(BuildContext context, DiaperType t) {
+    final l10n = AppLocalizations.of(context);
+    return switch (t) {
+      DiaperType.wet => l10n.diaperWet,
+      DiaperType.dirty => l10n.diaperDirty,
+      DiaperType.both => l10n.diaperBoth,
+    };
+  }
 
-  String _relativeTime(DateTime dt) {
+  String _relativeTime(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context);
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
-    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inMinutes < 1) return l10n.diaperJustNow;
+    if (diff.inMinutes < 60) return l10n.diaperMinAgo(diff.inMinutes);
+    if (diff.inHours < 24) return l10n.diaperHourAgo(diff.inHours);
     final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
     final m = dt.minute.toString().padLeft(2, '0');
     final p = dt.hour >= 12 ? 'PM' : 'AM';
@@ -170,7 +175,7 @@ class _DiaperSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Diapers',
+            Text(AppLocalizations.of(context).diapers,
                 style: Theme.of(context).textTheme.headlineMedium),
             Container(
               padding:
@@ -180,7 +185,7 @@ class _DiaperSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.full),
               ),
               child: Text(
-                '$todayCount today',
+                AppLocalizations.of(context).diapersToday(todayCount),
                 style: Theme.of(context)
                     .textTheme
                     .labelLarge
@@ -191,36 +196,39 @@ class _DiaperSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.stackMd),
         // Quick-tap buttons — open sheet with type pre-selected
-        Row(
-          children: [
-            Expanded(
-              child: _DiaperButton(
-                label: 'Wet',
-                icon: Icons.water_drop_outlined,
-                color: AppColors.primary,
-                onTap: () => onAddTap(DiaperType.wet),
+        Builder(builder: (context) {
+          final l10n = AppLocalizations.of(context);
+          return Row(
+            children: [
+              Expanded(
+                child: _DiaperButton(
+                  label: l10n.diaperWet,
+                  icon: Icons.water_drop_outlined,
+                  color: AppColors.primary,
+                  onTap: () => onAddTap(DiaperType.wet),
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.stackMd),
-            Expanded(
-              child: _DiaperButton(
-                label: 'Dirty',
-                icon: Icons.circle_outlined,
-                color: AppColors.tertiary,
-                onTap: () => onAddTap(DiaperType.dirty),
+              const SizedBox(width: AppSpacing.stackMd),
+              Expanded(
+                child: _DiaperButton(
+                  label: l10n.diaperDirty,
+                  icon: Icons.circle_outlined,
+                  color: AppColors.tertiary,
+                  onTap: () => onAddTap(DiaperType.dirty),
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.stackMd),
-            Expanded(
-              child: _DiaperButton(
-                label: 'Both',
-                icon: Icons.multiple_stop,
-                color: AppColors.secondary,
-                onTap: () => onAddTap(DiaperType.both),
+              const SizedBox(width: AppSpacing.stackMd),
+              Expanded(
+                child: _DiaperButton(
+                  label: l10n.diaperBoth,
+                  icon: Icons.multiple_stop,
+                  color: AppColors.secondary,
+                  onTap: () => onAddTap(DiaperType.both),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        }),
         if (diapers.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.stackMd),
           NpCard(
@@ -250,12 +258,12 @@ class _DiaperSection extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(_typeLabel(d.type),
+                                Text(_typeLabel(context, d.type),
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge),
                                 Text(
-                                  _relativeTime(d.time),
+                                  _relativeTime(context, d.time),
                                   style: Theme.of(context)
                                       .textTheme
                                       .labelSmall
@@ -288,7 +296,7 @@ class _DiaperSection extends StatelessWidget {
             const SizedBox(height: AppSpacing.stackSm),
             Center(
               child: Text(
-                '+${diapers.length - 5} more today — full history in Stats',
+                AppLocalizations.of(context).diapersMoreInStats(diapers.length - 5),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: AppColors.onSurfaceVariant,
                     ),
@@ -367,11 +375,12 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
     _selectedTime = DateTime.now();
   }
 
-  String _relativeTime(DateTime dt) {
+  String _relativeTime(BuildContext context, DateTime dt) {
+    final l10n = AppLocalizations.of(context);
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 1) return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min ago';
-    return '${diff.inHours}h ago';
+    if (diff.inMinutes < 1) return l10n.diaperJustNow;
+    if (diff.inMinutes < 60) return l10n.diaperMinAgo(diff.inMinutes);
+    return l10n.diaperHourAgo(diff.inHours);
   }
 
   Future<void> _pickTime() async {
@@ -394,10 +403,11 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final isNow = DateTime.now().difference(_selectedTime).inMinutes < 1;
     final timeDisplay = isNow
-        ? 'Now'
-        : _relativeTime(_selectedTime);
+        ? l10n.diaperNow
+        : _relativeTime(context, _selectedTime);
 
     return Container(
       margin: const EdgeInsets.all(AppSpacing.gutter),
@@ -416,10 +426,10 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Log Diaper',
+          Text(l10n.diaperLogTitle,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackLg),
-          Text('Type',
+          Text(l10n.diaperType,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   )),
@@ -428,9 +438,9 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
             children: DiaperType.values.map((type) {
               final selected = _selectedType == type;
               final label = switch (type) {
-                DiaperType.wet => 'Wet',
-                DiaperType.dirty => 'Dirty',
-                DiaperType.both => 'Both',
+                DiaperType.wet => l10n.diaperWet,
+                DiaperType.dirty => l10n.diaperDirty,
+                DiaperType.both => l10n.diaperBoth,
               };
               final color = switch (type) {
                 DiaperType.wet => AppColors.primary,
@@ -473,7 +483,7 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
             }).toList(),
           ),
           const SizedBox(height: AppSpacing.stackLg),
-          Text('Time',
+          Text(l10n.diaperTime,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   )),
@@ -507,7 +517,7 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
                   ),
                   const Spacer(),
                   Text(
-                    'Change',
+                    l10n.diaperChangeTime,
                     style: Theme.of(context).textTheme.labelSmall?.copyWith(
                           color: AppColors.primary,
                         ),
@@ -534,7 +544,7 @@ class _DiaperInputSheetState extends State<_DiaperInputSheet> {
                 ));
                 Navigator.pop(context);
               },
-              child: const Text('Save'),
+              child: Text(l10n.save),
             ),
           ),
         ],
@@ -569,7 +579,7 @@ class _WeightSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Weight',
+            Text(AppLocalizations.of(context).weightTitle,
                 style: Theme.of(context).textTheme.headlineMedium),
             GestureDetector(
               onTap: onAdd,
@@ -585,7 +595,7 @@ class _WeightSection extends StatelessWidget {
                     const Icon(Icons.add, size: 16, color: AppColors.onPrimary),
                     const SizedBox(width: 4),
                     Text(
-                      'Log weight',
+                      AppLocalizations.of(context).weightLogButton,
                       style: Theme.of(context)
                           .textTheme
                           .labelLarge
@@ -604,7 +614,7 @@ class _WeightSection extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.stackLg),
                 child: Text(
-                  'No weight entries yet.\nTap "Log weight" to add the first one.',
+                  AppLocalizations.of(context).weightEmpty,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.onSurfaceVariant,
@@ -616,7 +626,7 @@ class _WeightSection extends StatelessWidget {
         else ...[
           NpStatTile(
             icon: Icons.monitor_weight_outlined,
-            label: 'Latest weight',
+            label: AppLocalizations.of(context).weightLatest,
             value: (weights.first.grams / 1000).toStringAsFixed(2),
             unit: 'kg',
             iconColor: AppColors.primary,
@@ -638,7 +648,7 @@ class _WeightSection extends StatelessWidget {
                     ),
                     const SizedBox(width: AppSpacing.stackMd),
                     Text(
-                      '$sign${diff}g since last entry',
+                      AppLocalizations.of(context).weightSinceLast(sign, diff.abs()),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             color: diff >= 0
                                 ? AppColors.primary
@@ -711,7 +721,7 @@ class _WeightSection extends StatelessWidget {
             const SizedBox(height: AppSpacing.stackSm),
             Center(
               child: Text(
-                '+${weights.length - 5} more — full history in Stats',
+                AppLocalizations.of(context).weightMoreInStats(weights.length - 5),
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                       color: AppColors.onSurfaceVariant,
                     ),
@@ -771,7 +781,7 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Log Weight',
+          Text(AppLocalizations.of(context).weightLogTitle,
               style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.stackLg),
           Row(
@@ -831,7 +841,7 @@ class _WeightInputSheetState extends State<_WeightInputSheet> {
                       Navigator.pop(context);
                     }
                   : null,
-              child: const Text('Save'),
+              child: Text(AppLocalizations.of(context).save),
             ),
           ),
         ],
