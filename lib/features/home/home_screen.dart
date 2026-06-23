@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../data/models/baby_profile.dart';
+import '../../data/models/diaper_log.dart';
 import '../../data/models/session.dart';
 import '../../data/repositories/baby_repository.dart';
 import '../../data/repositories/session_repository.dart';
@@ -24,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Session? _activeSession;
   List<Session> _sessions = [];
+  List<DiaperLog> _diapers = [];
   NursingSide _selectedSide = NursingSide.left;
   BabyProfile? _profile;
   Timer? _ticker;
@@ -38,10 +40,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final active = await _repo.getActiveSession();
     final sessions = await _repo.getSessions();
     final profile = await _babyRepo.getProfile();
+    final diapers = await _babyRepo.getDiapers();
     setState(() {
       _activeSession = active;
       _sessions = sessions;
       _profile = profile;
+      _diapers = diapers;
       if (active != null) {
         _selectedSide = active.side;
         _startTicker();
@@ -142,6 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return 'Around $h:$m $period';
   }
 
+  int get _todayDiaperCount {
+    final today = DateTime.now();
+    return _diapers.where((d) =>
+        d.time.year == today.year &&
+        d.time.month == today.month &&
+        d.time.day == today.day).length;
+  }
+
   int get _dailyTotalMinutes {
     final today = DateTime.now();
     return _sessions
@@ -187,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: AppSpacing.stackLg),
           _StatsGrid(
             dailyTotalMinutes: _dailyTotalMinutes,
+            todayDiaperCount: _todayDiaperCount,
             nextFeedSuggestion: _nextFeedSuggestion,
           ),
         ],
@@ -426,9 +439,11 @@ class _RingPainter extends CustomPainter {
 class _StatsGrid extends StatelessWidget {
   const _StatsGrid({
     required this.dailyTotalMinutes,
+    required this.todayDiaperCount,
     required this.nextFeedSuggestion,
   });
   final int dailyTotalMinutes;
+  final int todayDiaperCount;
   final String? nextFeedSuggestion;
 
   @override
@@ -451,7 +466,7 @@ class _StatsGrid extends StatelessWidget {
               child: NpStatTile(
                 icon: Icons.child_care_outlined,
                 label: 'Diapers',
-                value: '6',
+                value: todayDiaperCount.toString(),
                 unit: 'today',
                 iconColor: AppColors.tertiary,
               ),

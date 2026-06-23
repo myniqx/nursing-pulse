@@ -7,6 +7,7 @@ import '../../data/repositories/session_repository.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
 import '../../shared/widgets/np_stat_tile.dart';
+import '../../shared/widgets/weight_chart.dart';
 import 'nursing_history_chart.dart';
 
 class StatsScreen extends StatefulWidget {
@@ -118,16 +119,18 @@ class _StatsScreenState extends State<StatsScreen> {
               onEdit: _showEditSheet,
             ),
             const SizedBox(height: AppSpacing.stackLg),
+            _InsightsBento(
+              avgMinutes: _avgDurationMinutes,
+              nightFeeds: _nightFeedCount,
+            ),
+            const SizedBox(height: AppSpacing.stackLg),
             NursingHistoryChart(
               sessions: _sessions,
               diapers: _diapers,
               weights: _weights,
             ),
             const SizedBox(height: AppSpacing.stackLg),
-            _InsightsBento(
-              avgMinutes: _avgDurationMinutes,
-              nightFeeds: _nightFeedCount,
-            ),
+            WeightChart(weights: _weights),
           ],
         ),
       ),

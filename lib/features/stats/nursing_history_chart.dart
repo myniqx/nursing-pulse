@@ -30,11 +30,43 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
   late DateTimeRange _range;
   int? _selectedBarIndex;
 
+  // Cached computations — only rebuilt when range or widget data changes
+  late List<_BarData> _cachedBars;
+  late int _cachedMaxMin;
+
   @override
   void initState() {
     super.initState();
     final today = _d(DateTime.now());
     _range = DateTimeRange(start: today, end: today);
+    _rebuildCache();
+  }
+
+  @override
+  void didUpdateWidget(NursingHistoryChart old) {
+    super.didUpdateWidget(old);
+    if (old.sessions != widget.sessions ||
+        old.diapers != widget.diapers ||
+        old.weights != widget.weights) {
+      _rebuildCache();
+    }
+  }
+
+  void _rebuildCache() {
+    _cachedBars = _bars;
+    _cachedMaxMin = _cachedBars.fold(0, (m, b) => math.max(m, b.minutes));
+    _rebuildStats();
+  }
+
+  late _PeriodStats _cachedStats;
+
+  void _rebuildStats() {
+    if (_selectedBarIndex != null && _selectedBarIndex! < _cachedBars.length) {
+      final bar = _cachedBars[_selectedBarIndex!];
+      _cachedStats = _statsFor(DateTimeRange(start: bar.periodStart, end: bar.periodEnd));
+    } else {
+      _cachedStats = _statsFor(_range);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -182,13 +214,6 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
     );
   }
 
-  _PeriodStats get _currentStats {
-    if (_selectedBarIndex != null) {
-      final bar = _bars[_selectedBarIndex!];
-      return _statsFor(DateTimeRange(start: bar.periodStart, end: bar.periodEnd));
-    }
-    return _statsFor(_range);
-  }
 
   // ---------------------------------------------------------------------------
   // Range picker
@@ -204,6 +229,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
         onSelect: (r) => setState(() {
           _range = r;
           _selectedBarIndex = null;
+          _rebuildCache();
         }),
       ),
     );
@@ -215,10 +241,10 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
 
   @override
   Widget build(BuildContext context) {
-    final bars = _bars;
-    final maxMin = bars.fold(0, (m, b) => math.max(m, b.minutes));
+    final bars = _cachedBars;
+    final maxMin = _cachedMaxMin;
     final step = _labelStep(bars.length);
-    final stats = _currentStats;
+    final stats = _cachedStats;
     final isEmpty = bars.every((b) => b.minutes == 0);
 
     return Column(
@@ -284,6 +310,7 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                   selectedIndex: _selectedBarIndex,
                   onBarTap: (i) => setState(() {
                     _selectedBarIndex = _selectedBarIndex == i ? null : i;
+                    _rebuildStats();
                   }),
                 ),
               if (_rangeDays == 1 && !isEmpty) ...[
@@ -299,52 +326,50 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
                   ],
                 ),
               ],
+              if (!isEmpty) ...[
+                const Divider(color: AppColors.surfaceContainerHigh, height: AppSpacing.stackLg * 2),
+                if (_selectedBarIndex != null) ...[
+                  Text(
+                    _cachedBars[_selectedBarIndex!].label,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: AppSpacing.stackMd),
+                ],
+                Row(
+                  children: [
+                    Expanded(child: _MiniStatCard(
+                      icon: Icons.water_drop_outlined,
+                      label: 'Total nursing',
+                      value: _fmtMins(stats.totalMinutes),
+                      color: AppColors.primary,
+                    )),
+                    const SizedBox(width: AppSpacing.stackMd),
+                    Expanded(child: _MiniStatCard(
+                      icon: Icons.child_care_outlined,
+                      label: 'Diapers',
+                      value: stats.diaperCount.toString(),
+                      color: AppColors.tertiary,
+                    )),
+                    const SizedBox(width: AppSpacing.stackMd),
+                    Expanded(child: _MiniStatCard(
+                      icon: Icons.monitor_weight_outlined,
+                      label: 'Weight',
+                      value: stats.hasWeightData
+                          ? (stats.weightDiffGrams != null
+                              ? '${stats.weightDiffGrams! >= 0 ? '+' : ''}${stats.weightDiffGrams}g'
+                              : '—')
+                          : '—',
+                      color: AppColors.secondary,
+                    )),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
-
-        // Stats cards
-        if (!isEmpty) ...[
-          const SizedBox(height: AppSpacing.stackMd),
-          if (_selectedBarIndex != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.stackSm, left: 4),
-              child: Text(
-                'Selected: ${_bars[_selectedBarIndex!].label}',
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      color: AppColors.primary,
-                    ),
-              ),
-            ),
-          Row(
-            children: [
-              Expanded(child: _MiniStatCard(
-                icon: Icons.water_drop_outlined,
-                label: 'Total nursing',
-                value: _fmtMins(stats.totalMinutes),
-                color: AppColors.primary,
-              )),
-              const SizedBox(width: AppSpacing.stackMd),
-              Expanded(child: _MiniStatCard(
-                icon: Icons.child_care_outlined,
-                label: 'Diapers',
-                value: stats.diaperCount.toString(),
-                color: AppColors.tertiary,
-              )),
-              const SizedBox(width: AppSpacing.stackMd),
-              Expanded(child: _MiniStatCard(
-                icon: Icons.monitor_weight_outlined,
-                label: 'Weight',
-                value: stats.hasWeightData
-                    ? (stats.weightDiffGrams != null
-                        ? '${stats.weightDiffGrams! >= 0 ? '+' : ''}${stats.weightDiffGrams}g'
-                        : '—')
-                    : '—',
-                color: AppColors.secondary,
-              )),
-            ],
-          ),
-        ],
       ],
     );
   }
@@ -398,10 +423,18 @@ class _InteractiveBarChartState extends State<_InteractiveBarChart>
   @override
   void didUpdateWidget(_InteractiveBarChart old) {
     super.didUpdateWidget(old);
-    // Only animate when bar data changes, not on tap (selectedIndex change)
-    if (old.bars != widget.bars) {
+    // Compare by value, not reference — bars getter creates a new list every build
+    if (!_barsEqual(old.bars, widget.bars)) {
       _ctrl.forward(from: 0);
     }
+  }
+
+  bool _barsEqual(List<_BarData> a, List<_BarData> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i].minutes != b[i].minutes || a[i].label != b[i].label) return false;
+    }
+    return true;
   }
 
   @override
@@ -532,8 +565,12 @@ class _MiniStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return NpCard(
+    return Container(
       padding: const EdgeInsets.all(AppSpacing.stackMd),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
