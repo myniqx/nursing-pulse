@@ -35,19 +35,19 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String lastNursingMinAgo(int minutes, String side) {
-    return '$minutes min geleden • $side';
+  String lastNursingMinAgo(int minutes, String side, int duration) {
+    return '$minutes min geleden • $side • $duration min';
   }
 
   @override
-  String lastNursingHourAgo(int hours, String side) {
+  String lastNursingHourAgo(int hours, String side, int duration) {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
       other: 'uur',
       one: 'uur',
     );
-    return '$hours $_temp0 geleden • $side';
+    return '$hours $_temp0 geleden • $side • $duration min';
   }
 
   @override
@@ -246,10 +246,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get settingsLanguage => 'Taal';
 
   @override
+  String get settingsLanguageHint =>
+      'Kies de taal die door de app wordt gebruikt';
+
+  @override
   String get settingsLanguageSystem => 'Systeemstandaard';
 
   @override
   String get settingsNotifications => 'Meldingen';
+
+  @override
+  String get settingsNotificationsHint =>
+      'Bepaalt wat er wordt weergegeven tijdens een voedingssessie';
 
   @override
   String get settingsNotifTimer => 'Timer in meldingenbalk tonen';
@@ -300,6 +308,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get settingsClearStats => 'Alle gegevens wissen';
+
+  @override
+  String get settingsClearStatsHint =>
+      'Verwijdert permanent alle sessies, luiers en gewichtsinvoer. Babyprofiel blijft bewaard.';
 
   @override
   String get settingsClearStatsConfirmTitle => 'Alle statistieken wissen?';

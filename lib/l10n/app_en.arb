@@ -16,18 +16,20 @@
       "side": { "type": "String" }
     }
   },
-  "lastNursingMinAgo": "{minutes} min ago • {side}",
+  "lastNursingMinAgo": "{minutes} min ago • {side} • {duration} min",
   "@lastNursingMinAgo": {
     "placeholders": {
       "minutes": { "type": "int" },
-      "side": { "type": "String" }
+      "side": { "type": "String" },
+      "duration": { "type": "int" }
     }
   },
-  "lastNursingHourAgo": "{hours} {hours, plural, =1{hour} other{hours}} ago • {side}",
+  "lastNursingHourAgo": "{hours} {hours, plural, =1{hour} other{hours}} ago • {side} • {duration} min",
   "@lastNursingHourAgo": {
     "placeholders": {
       "hours": { "type": "int" },
-      "side": { "type": "String" }
+      "side": { "type": "String" },
+      "duration": { "type": "int" }
     }
   },
 
@@ -139,8 +141,10 @@
   "cancel": "Cancel",
 
   "settingsLanguage": "Language",
+  "settingsLanguageHint": "Choose the language used throughout the app",
   "settingsLanguageSystem": "System default",
   "settingsNotifications": "Notifications",
+  "settingsNotificationsHint": "Controls what appears while a nursing session is active",
   "settingsNotifTimer": "Show timer in notification bar",
   "settingsNotifTimerHint": "Displays a persistent notification while nursing with a Finish button",
   "settingsOverlay": "Floating timer",
@@ -163,6 +167,7 @@
     }
   },
   "settingsClearStats": "Clear All Stats",
+  "settingsClearStatsHint": "Permanently deletes all sessions, diapers and weight entries. Baby profile is kept.",
   "settingsClearStatsConfirmTitle": "Clear all stats?",
   "settingsClearStatsConfirmHint": "This will delete all nursing sessions, diapers and weight entries. This cannot be undone.",
   "settingsClearStatsCancel": "Cancel",

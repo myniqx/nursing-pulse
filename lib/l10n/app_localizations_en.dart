@@ -35,19 +35,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String lastNursingMinAgo(int minutes, String side) {
-    return '$minutes min ago • $side';
+  String lastNursingMinAgo(int minutes, String side, int duration) {
+    return '$minutes min ago • $side • $duration min';
   }
 
   @override
-  String lastNursingHourAgo(int hours, String side) {
+  String lastNursingHourAgo(int hours, String side, int duration) {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
       other: 'hours',
       one: 'hour',
     );
-    return '$hours $_temp0 ago • $side';
+    return '$hours $_temp0 ago • $side • $duration min';
   }
 
   @override
@@ -245,10 +245,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsLanguageHint =>
+      'Choose the language used throughout the app';
+
+  @override
   String get settingsLanguageSystem => 'System default';
 
   @override
   String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsNotificationsHint =>
+      'Controls what appears while a nursing session is active';
 
   @override
   String get settingsNotifTimer => 'Show timer in notification bar';
@@ -299,6 +307,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsClearStats => 'Clear All Stats';
+
+  @override
+  String get settingsClearStatsHint =>
+      'Permanently deletes all sessions, diapers and weight entries. Baby profile is kept.';
 
   @override
   String get settingsClearStatsConfirmTitle => 'Clear all stats?';

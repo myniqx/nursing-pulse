@@ -104,7 +104,7 @@ class _StatsScreenState extends State<StatsScreen> {
           AppSpacing.containerPadding,
           AppSpacing.stackMd,
           AppSpacing.containerPadding,
-          120,
+          80,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

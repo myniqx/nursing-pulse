@@ -35,19 +35,19 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String lastNursingMinAgo(int minutes, String side) {
-    return '$minutes dakika önce • $side';
+  String lastNursingMinAgo(int minutes, String side, int duration) {
+    return '$minutes dakika önce • $side • $duration dk';
   }
 
   @override
-  String lastNursingHourAgo(int hours, String side) {
+  String lastNursingHourAgo(int hours, String side, int duration) {
     String _temp0 = intl.Intl.pluralLogic(
       hours,
       locale: localeName,
       other: 'saat',
       one: 'saat',
     );
-    return '$hours $_temp0 önce • $side';
+    return '$hours $_temp0 önce • $side • $duration dk';
   }
 
   @override
@@ -246,10 +246,17 @@ class AppLocalizationsTr extends AppLocalizations {
   String get settingsLanguage => 'Dil';
 
   @override
+  String get settingsLanguageHint => 'Uygulamada kullanılan dili seçin';
+
+  @override
   String get settingsLanguageSystem => 'Sistem varsayılanı';
 
   @override
   String get settingsNotifications => 'Bildirimler';
+
+  @override
+  String get settingsNotificationsHint =>
+      'Emzirme seansı sırasında nelerin görüneceğini ayarlar';
 
   @override
   String get settingsNotifTimer => 'Bildirimlerde zamanlayıcıyı göster';
@@ -300,6 +307,10 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get settingsClearStats => 'Tüm Verileri Sil';
+
+  @override
+  String get settingsClearStatsHint =>
+      'Tüm seansları, bezleri ve kilo kayıtlarını kalıcı olarak siler. Bebek profili korunur.';
 
   @override
   String get settingsClearStatsConfirmTitle => 'Tüm veriler silinsin mi?';

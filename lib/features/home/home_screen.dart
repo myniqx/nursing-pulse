@@ -139,10 +139,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final last = completed.first;
     final ago = DateTime.now().difference(last.endTime!);
     final side = last.side == NursingSide.left ? l10n.sideLeftFull : l10n.sideRightFull;
+    final duration = last.duration.inMinutes;
     if (ago.inMinutes < 60) {
-      return l10n.lastNursingMinAgo(ago.inMinutes, side);
+      return l10n.lastNursingMinAgo(ago.inMinutes, side, duration);
     }
-    return l10n.lastNursingHourAgo(ago.inHours, side);
+    return l10n.lastNursingHourAgo(ago.inHours, side, duration);
   }
 
   String? _nextFeedSuggestion(AppLocalizations l10n) {
@@ -200,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
         AppSpacing.containerPadding,
         AppSpacing.stackMd,
         AppSpacing.containerPadding,
-        120,
+        80,
       ),
       child: Column(
         children: [

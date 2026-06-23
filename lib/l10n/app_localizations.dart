@@ -151,14 +151,14 @@ abstract class AppLocalizations {
   /// No description provided for @lastNursingMinAgo.
   ///
   /// In en, this message translates to:
-  /// **'{minutes} min ago • {side}'**
-  String lastNursingMinAgo(int minutes, String side);
+  /// **'{minutes} min ago • {side} • {duration} min'**
+  String lastNursingMinAgo(int minutes, String side, int duration);
 
   /// No description provided for @lastNursingHourAgo.
   ///
   /// In en, this message translates to:
-  /// **'{hours} {hours, plural, =1{hour} other{hours}} ago • {side}'**
-  String lastNursingHourAgo(int hours, String side);
+  /// **'{hours} {hours, plural, =1{hour} other{hours}} ago • {side} • {duration} min'**
+  String lastNursingHourAgo(int hours, String side, int duration);
 
   /// No description provided for @sideLeft.
   ///
@@ -514,6 +514,12 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// No description provided for @settingsLanguageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the language used throughout the app'**
+  String get settingsLanguageHint;
+
   /// No description provided for @settingsLanguageSystem.
   ///
   /// In en, this message translates to:
@@ -525,6 +531,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications'**
   String get settingsNotifications;
+
+  /// No description provided for @settingsNotificationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Controls what appears while a nursing session is active'**
+  String get settingsNotificationsHint;
 
   /// No description provided for @settingsNotifTimer.
   ///
@@ -615,6 +627,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Clear All Stats'**
   String get settingsClearStats;
+
+  /// No description provided for @settingsClearStatsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently deletes all sessions, diapers and weight entries. Baby profile is kept.'**
+  String get settingsClearStatsHint;
 
   /// No description provided for @settingsClearStatsConfirmTitle.
   ///

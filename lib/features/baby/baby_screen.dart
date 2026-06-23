@@ -6,7 +6,6 @@ import '../../data/models/weight_entry.dart';
 import '../../data/repositories/baby_repository.dart';
 import '../../shared/app_theme.dart';
 import '../../shared/widgets/np_card.dart';
-import '../../shared/widgets/np_stat_tile.dart';
 
 class BabyScreen extends StatefulWidget {
   const BabyScreen({super.key});
@@ -83,14 +82,14 @@ class _BabyScreenState extends State<BabyScreen> {
           AppSpacing.containerPadding,
           AppSpacing.stackMd,
           AppSpacing.containerPadding,
-          120,
+          80,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _DiaperSection(
               todayCount: _todayDiapers.length,
-              diapers: _todayDiapers,
+              diapers: _diapers,
               onAddTap: _showDiaperSheet,
               onDelete: _deleteDiaper,
             ),
@@ -624,42 +623,109 @@ class _WeightSection extends StatelessWidget {
             ),
           )
         else ...[
-          NpStatTile(
-            icon: Icons.monitor_weight_outlined,
-            label: AppLocalizations.of(context).weightLatest,
-            value: (weights.first.grams / 1000).toStringAsFixed(2),
-            unit: 'kg',
-            iconColor: AppColors.primary,
-          ),
-          if (weights.length >= 2) ...[
-            const SizedBox(height: AppSpacing.stackMd),
-            Builder(builder: (context) {
-              final diff = weights.first.grams - weights[1].grams;
-              final sign = diff >= 0 ? '+' : '';
-              return NpCard(
-                color: diff >= 0
-                    ? AppColors.primaryFixed.withValues(alpha: 0.30)
-                    : AppColors.errorContainer.withValues(alpha: 0.30),
-                child: Row(
-                  children: [
-                    Icon(
-                      diff >= 0 ? Icons.trending_up : Icons.trending_down,
-                      color: diff >= 0 ? AppColors.primary : AppColors.error,
-                    ),
-                    const SizedBox(width: AppSpacing.stackMd),
-                    Text(
-                      AppLocalizations.of(context).weightSinceLast(sign, diff.abs()),
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: diff >= 0
-                                ? AppColors.primary
-                                : AppColors.error,
+          Builder(builder: (context) {
+            final l10n = AppLocalizations.of(context);
+            final latest = weights.first;
+            final hasTrend = weights.length >= 2;
+            final diff = hasTrend ? latest.grams - weights[1].grams : 0;
+            final isGain = diff >= 0;
+            final sign = isGain ? '+' : '';
+
+            final trendColor = isGain
+                ? AppColors.primaryFixed.withValues(alpha: 0.40)
+                : AppColors.errorContainer.withValues(alpha: 0.40);
+
+            return NpCard(
+              padding: EdgeInsets.zero,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(AppSpacing.stackMd),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.weightLatest,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(color: AppColors.onSurfaceVariant),
+                              ),
+                              const SizedBox(height: AppSpacing.stackSm),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.baseline,
+                                textBaseline: TextBaseline.alphabetic,
+                                children: [
+                                  Text(
+                                    (latest.grams / 1000).toStringAsFixed(2),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineLarge
+                                        ?.copyWith(color: AppColors.primary),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'kg',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelLarge
+                                        ?.copyWith(color: AppColors.primary),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.10),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.monitor_weight_outlined,
+                              size: 22, color: AppColors.primary),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }),
-          ],
+                  ),
+                  if (hasTrend)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.stackMd,
+                        vertical: AppSpacing.stackMd,
+                      ),
+                      decoration: BoxDecoration(
+                        color: trendColor,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(AppRadius.lg),
+                          bottomRight: Radius.circular(AppRadius.lg),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isGain ? Icons.trending_up : Icons.trending_down,
+                            size: 18,
+                            color: isGain ? AppColors.primary : AppColors.error,
+                          ),
+                          const SizedBox(width: AppSpacing.stackMd),
+                          Text(
+                            l10n.weightSinceLast(sign, diff.abs()),
+                            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                  color: isGain ? AppColors.primary : AppColors.error,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            );
+          }),
           const SizedBox(height: AppSpacing.stackMd),
           NpCard(
             child: Column(

@@ -22,7 +22,7 @@ class NpTopAppBar extends StatelessWidget implements PreferredSizeWidget {
           CircleAvatar(
             radius: 20,
             backgroundColor: AppColors.secondaryContainer,
-            child: const Icon(Icons.person, color: AppColors.onSurfaceVariant),
+            backgroundImage: const AssetImage('assets/icon.png'),
           ),
           const SizedBox(width: 12),
           Text(
