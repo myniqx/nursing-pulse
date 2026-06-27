@@ -48,11 +48,8 @@ class StatsScreenState extends State<StatsScreen> {
   }
 
   List<Session> get _todaySessions {
-    final today = DateTime.now();
-    return _sessions.where((s) =>
-        s.startTime.year == today.year &&
-        s.startTime.month == today.month &&
-        s.startTime.day == today.day).toList();
+    final cutoff = DateTime.now().subtract(const Duration(hours: 24));
+    return _sessions.where((s) => !s.isActive && s.startTime.isAfter(cutoff)).toList();
   }
 
   int get _dailyTotalMinutes =>
@@ -421,7 +418,7 @@ class _SessionHistoryCardState extends State<_SessionHistoryCard> {
                                                 .textTheme
                                                 .labelLarge),
                                         Text(
-                                          widget.timeLabel(s.startTime),
+                                          '${widget.timeLabel(s.startTime)} → ${widget.timeLabel(s.endTime!)}',
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodyMedium

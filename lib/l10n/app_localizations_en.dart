@@ -95,10 +95,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statsTodaySummary => 'Today\'s Summary';
+  String get statsTodaySummary => 'Last 24 Hours';
 
   @override
-  String get statsTotalNursing => 'total nursing today';
+  String get statsTotalNursing => 'total nursing (last 24h)';
 
   @override
   String get statsNoSessionsYet => 'No sessions yet';
@@ -113,10 +113,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statsRightSide => 'Right Side';
 
   @override
-  String get statsTodaySessions => 'Today\'s Sessions';
+  String get statsTodaySessions => 'Last 24 Hours';
 
   @override
-  String get statsNoSessionsToday => 'No sessions recorded today';
+  String get statsNoSessionsToday => 'No sessions in the last 24 hours';
 
   @override
   String get statsAvgDuration => 'Avg. Duration';

@@ -246,13 +246,13 @@ abstract class AppLocalizations {
   /// No description provided for @statsTodaySummary.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Summary'**
+  /// **'Last 24 Hours'**
   String get statsTodaySummary;
 
   /// No description provided for @statsTotalNursing.
   ///
   /// In en, this message translates to:
-  /// **'total nursing today'**
+  /// **'total nursing (last 24h)'**
   String get statsTotalNursing;
 
   /// No description provided for @statsNoSessionsYet.
@@ -282,13 +282,13 @@ abstract class AppLocalizations {
   /// No description provided for @statsTodaySessions.
   ///
   /// In en, this message translates to:
-  /// **'Today\'s Sessions'**
+  /// **'Last 24 Hours'**
   String get statsTodaySessions;
 
   /// No description provided for @statsNoSessionsToday.
   ///
   /// In en, this message translates to:
-  /// **'No sessions recorded today'**
+  /// **'No sessions in the last 24 hours'**
   String get statsNoSessionsToday;
 
   /// No description provided for @statsAvgDuration.

@@ -176,13 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showSessionsSheet(AppLocalizations l10n) {
-    final today = DateTime.now();
+    final cutoff = DateTime.now().subtract(const Duration(hours: 24));
     final todaySessions = _sessions
-        .where((s) =>
-            !s.isActive &&
-            s.startTime.year == today.year &&
-            s.startTime.month == today.month &&
-            s.startTime.day == today.day)
+        .where((s) => !s.isActive && s.startTime.isAfter(cutoff))
         .toList();
 
     showModalBottomSheet(
@@ -272,9 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: _LastNursingNote(
                   text: _lastNursingText(l10n),
-                  onTap: _sessions.any((s) => !s.isActive)
-                      ? () => _showSessionsSheet(l10n)
-                      : null,
+                  onTap: () => _showSessionsSheet(l10n),
                 ),
               ),
               const SizedBox(width: AppSpacing.stackMd),
@@ -433,18 +427,20 @@ class _TodaySessionsSheet extends StatelessWidget {
                             children: [
                               Text(sideLabel,
                                   style: Theme.of(context).textTheme.labelLarge),
-                              Text(_timeLabel(s.startTime),
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        fontSize: 12,
-                                        color: AppColors.onSurfaceVariant,
-                                      )),
+                              Text(
+                                '${_timeLabel(s.startTime)} → ${_timeLabel(s.endTime!)}',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontSize: 12,
+                                      color: AppColors.onSurfaceVariant,
+                                    ),
+                              ),
                             ],
                           ),
                         ),
                         Text(
-                          '${s.duration.inMinutes} min',
+                          '${s.duration.inMinutes} ${l10n.statsUnitMin}',
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                                color: AppColors.primary,
+                                color: color,
                               ),
                         ),
                       ],

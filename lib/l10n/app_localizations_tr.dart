@@ -95,10 +95,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get statsTodaySummary => 'Bugünün Özeti';
+  String get statsTodaySummary => 'Son 24 Saat';
 
   @override
-  String get statsTotalNursing => 'bugün toplam emzirme';
+  String get statsTotalNursing => 'toplam emzirme (son 24s)';
 
   @override
   String get statsNoSessionsYet => 'Henüz kayıt yok';
@@ -113,10 +113,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get statsRightSide => 'Sağ Taraf';
 
   @override
-  String get statsTodaySessions => 'Bugünkü Seanslar';
+  String get statsTodaySessions => 'Son 24 Saat';
 
   @override
-  String get statsNoSessionsToday => 'Bugün kayıtlı seans yok';
+  String get statsNoSessionsToday => 'Son 24 saatte kayıtlı seans yok';
 
   @override
   String get statsAvgDuration => 'Ort. Süre';

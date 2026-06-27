@@ -95,10 +95,10 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get statsTodaySummary => 'Samenvatting van vandaag';
+  String get statsTodaySummary => 'Laatste 24 uur';
 
   @override
-  String get statsTotalNursing => 'totale voeding vandaag';
+  String get statsTotalNursing => 'totale voeding (laatste 24u)';
 
   @override
   String get statsNoSessionsYet => 'Nog geen sessies';
@@ -113,10 +113,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get statsRightSide => 'Rechterkant';
 
   @override
-  String get statsTodaySessions => 'Sessies van vandaag';
+  String get statsTodaySessions => 'Laatste 24 uur';
 
   @override
-  String get statsNoSessionsToday => 'Geen sessies geregistreerd vandaag';
+  String get statsNoSessionsToday => 'Geen sessies in de laatste 24 uur';
 
   @override
   String get statsAvgDuration => 'Gem. duur';

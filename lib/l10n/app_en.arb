@@ -66,14 +66,14 @@
     }
   },
 
-  "statsTodaySummary": "Today's Summary",
-  "statsTotalNursing": "total nursing today",
+  "statsTodaySummary": "Last 24 Hours",
+  "statsTotalNursing": "total nursing (last 24h)",
   "statsNoSessionsYet": "No sessions yet",
   "statsLateralBalance": "LATERAL BALANCE",
   "statsLeftSide": "Left Side",
   "statsRightSide": "Right Side",
-  "statsTodaySessions": "Today's Sessions",
-  "statsNoSessionsToday": "No sessions recorded today",
+  "statsTodaySessions": "Last 24 Hours",
+  "statsNoSessionsToday": "No sessions in the last 24 hours",
   "statsAvgDuration": "Avg. Duration",
   "statsNightFeeds": "Night Feeds",
   "statsHoldToEdit": "hold to edit",
