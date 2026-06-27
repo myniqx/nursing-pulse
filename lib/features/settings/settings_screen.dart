@@ -641,6 +641,7 @@ class _LanguageSection extends StatelessWidget {
     final appState = NursingPulseApp.of(context);
     final currentCode = Localizations.localeOf(context).languageCode;
 
+    final isSystemSelected = !_languages.any((l) => l.code == currentCode);
     return NpSection(
       title: l10n.settingsLanguage,
       description: l10n.settingsLanguageHint,
@@ -648,7 +649,7 @@ class _LanguageSection extends StatelessWidget {
         children: [
           _LanguageTile(
             label: l10n.settingsLanguageSystem,
-            selected: false,
+            selected: isSystemSelected,
             isSystem: true,
             onTap: () => appState.setLocale(null),
           ),

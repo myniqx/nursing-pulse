@@ -124,5 +124,12 @@
   "settingsEnterBirthDate": "Öneriyi görmek için doğum tarihini girin",
 
   "weeksOld": "{weeks} haftalık",
-  "monthsOld": "{months} aylık"
+  "monthsOld": "{months} aylık",
+
+  "nextFeedOverdue": "Besleme zamanı geçti",
+  "statsShowMore": "{count} daha göster",
+  "notifNursingTitle": "Emzirme devam ediyor",
+  "notifNursingFinish": "Bitir",
+  "overlayNursingContent": "Emzirme seansı devam ediyor",
+  "weightUnit": "kg"
 }

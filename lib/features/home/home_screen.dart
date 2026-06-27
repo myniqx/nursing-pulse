@@ -96,9 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _activeSession = session);
     _startTicker();
     if (mounted) {
+      final l10n = AppLocalizations.of(context);
       await NursingSessionService.instance.start(
         elapsedSeconds: 0,
         context: context,
+        notifTitle: l10n.notifNursingTitle,
+        notifFinishLabel: l10n.notifNursingFinish,
+        overlayContent: l10n.overlayNursingContent,
       );
     }
   }
@@ -126,10 +130,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _finishNursing() async {
+    if (_activeSession == null) return;
     _ticker?.cancel();
-    final elapsed = _activeSession != null
-        ? DateTime.now().difference(_activeSession!.startTime)
-        : Duration.zero;
+    final elapsed = DateTime.now().difference(_activeSession!.startTime);
 
     if (elapsed.inSeconds < 15) {
       await _repo.discardActiveSession();
@@ -199,10 +202,11 @@ class _HomeScreenState extends State<HomeScreen> {
     if (ago.inMinutes < 60) {
       return l10n.lastNursingMinAgo(ago.inMinutes, side, duration);
     }
-    return l10n.lastNursingHourAgo(ago.inHours, ago.inMinutes % 60, side, duration);
+    final remainingMins = (ago.inMinutes % 60).toString().padLeft(2, '0');
+    return l10n.lastNursingHourAgo(ago.inHours, remainingMins, side, duration);
   }
 
-  String? _nextFeedSuggestion(AppLocalizations l10n) {
+  String? _nextFeedSuggestion(BuildContext context, AppLocalizations l10n) {
     final completed = _sessions.where((s) => !s.isActive).toList();
     if (completed.isEmpty) return null;
 
@@ -210,12 +214,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final intervalHours = _profile?.effectiveIntervalHours ?? 3.0;
     final suggested = lastEnd.add(Duration(minutes: (intervalHours * 60).round()));
 
-    if (suggested.isBefore(DateTime.now())) return l10n.diaperJustNow;
+    if (suggested.isBefore(DateTime.now())) return l10n.nextFeedOverdue;
 
-    final h = suggested.hour % 12 == 0 ? 12 : suggested.hour % 12;
-    final m = suggested.minute.toString().padLeft(2, '0');
-    final period = suggested.hour >= 12 ? 'PM' : 'AM';
-    return l10n.nextFeedAround('$h:$m $period');
+    final timeStr = TimeOfDay.fromDateTime(suggested).format(context);
+    return l10n.nextFeedAround(timeStr);
   }
 
   int get _todayDiaperCount {
@@ -229,13 +231,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   int get _dailyTotalMinutes {
-    final today = DateTime.now();
+    final cutoff = DateTime.now().subtract(const Duration(hours: 24));
     return _sessions
-        .where((s) =>
-            !s.isActive &&
-            s.startTime.year == today.year &&
-            s.startTime.month == today.month &&
-            s.startTime.day == today.day)
+        .where((s) => !s.isActive && s.startTime.isAfter(cutoff))
         .fold(0, (sum, s) => sum + s.duration.inMinutes);
   }
 
@@ -300,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _StatsGrid(
             dailyTotalMinutes: _dailyTotalMinutes,
             todayDiaperCount: _todayDiaperCount,
-            nextFeedSuggestion: _nextFeedSuggestion(l10n),
+            nextFeedSuggestion: _nextFeedSuggestion(context, l10n),
           ),
         ],
       ),
@@ -360,12 +358,8 @@ class _TodaySessionsSheet extends StatelessWidget {
   const _TodaySessionsSheet({required this.sessions});
   final List<Session> sessions;
 
-  String _timeLabel(DateTime dt) {
-    final h = dt.hour % 12 == 0 ? 12 : dt.hour % 12;
-    final m = dt.minute.toString().padLeft(2, '0');
-    final period = dt.hour >= 12 ? 'PM' : 'AM';
-    return '$h:$m $period';
-  }
+  String _timeLabel(BuildContext context, DateTime dt) =>
+      TimeOfDay.fromDateTime(dt).format(context);
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +422,7 @@ class _TodaySessionsSheet extends StatelessWidget {
                               Text(sideLabel,
                                   style: Theme.of(context).textTheme.labelLarge),
                               Text(
-                                '${_timeLabel(s.startTime)} → ${_timeLabel(s.endTime!)}',
+                                '${_timeLabel(context, s.startTime)} → ${_timeLabel(context, s.endTime!)}',
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       fontSize: 12,
                                       color: AppColors.onSurfaceVariant,
@@ -680,7 +674,7 @@ class _StatsGrid extends StatelessWidget {
                 icon: Icons.child_care_outlined,
                 label: l10n.diapers,
                 value: todayDiaperCount.toString(),
-                unit: l10n.navHome == 'Home' ? 'today' : '',
+                unit: l10n.statsUnitTimes,
                 iconColor: AppColors.tertiary,
               ),
             ),

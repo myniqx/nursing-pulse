@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String lastNursingHourAgo(
     int hours,
-    int remainingMinutes,
+    String remainingMinutes,
     String side,
     int duration,
   ) {
@@ -402,4 +402,24 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$months $_temp0 old';
   }
+
+  @override
+  String get nextFeedOverdue => 'Feed time has passed';
+
+  @override
+  String statsShowMore(int count) {
+    return 'Show $count more';
+  }
+
+  @override
+  String get notifNursingTitle => 'Nursing in progress';
+
+  @override
+  String get notifNursingFinish => 'Finish';
+
+  @override
+  String get overlayNursingContent => 'Nursing session in progress';
+
+  @override
+  String get weightUnit => 'kg';
 }

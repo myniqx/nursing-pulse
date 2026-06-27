@@ -124,5 +124,12 @@
   "settingsEnterBirthDate": "Voer geboortedatum in om aanbeveling te zien",
 
   "weeksOld": "{weeks} {weeks, plural, =1{week} other{weken}} oud",
-  "monthsOld": "{months} {months, plural, =1{maand} other{maanden}} oud"
+  "monthsOld": "{months} {months, plural, =1{maand} other{maanden}} oud",
+
+  "nextFeedOverdue": "Voedingstijd is voorbij",
+  "statsShowMore": "{count} meer tonen",
+  "notifNursingTitle": "Voeding bezig",
+  "notifNursingFinish": "Stoppen",
+  "overlayNursingContent": "Voedingssessie bezig",
+  "weightUnit": "kg"
 }

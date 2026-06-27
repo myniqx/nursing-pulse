@@ -669,7 +669,7 @@ class _WeightSection extends StatelessWidget {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'kg',
+                                    AppLocalizations.of(context).weightUnit,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelLarge
@@ -758,7 +758,7 @@ class _WeightSection extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '${(w.grams / 1000).toStringAsFixed(2)} kg',
+                            '${(w.grams / 1000).toStringAsFixed(2)} ${AppLocalizations.of(context).weightUnit}',
                             style: Theme.of(context)
                                 .textTheme
                                 .labelLarge

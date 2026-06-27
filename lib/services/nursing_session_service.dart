@@ -28,7 +28,6 @@ class _NursingTaskHandler extends TaskHandler {
     _elapsed++;
     FlutterForegroundTask.saveData(key: 'elapsed', value: _elapsed);
     FlutterForegroundTask.updateService(
-      notificationTitle: 'Nursing in progress',
       notificationText: _fmt(_elapsed),
     );
     FlutterForegroundTask.sendDataToMain(_elapsed);
@@ -99,15 +98,22 @@ class NursingSessionService {
   Future<void> start({
     required int elapsedSeconds,
     required BuildContext context,
+    required String notifTitle,
+    required String notifFinishLabel,
+    required String overlayContent,
   }) async {
     final notif = await isNotifEnabled;
     final overlay = await isOverlayEnabled;
     if (notif) {
       await FlutterForegroundTask.requestNotificationPermission();
-      await _startForeground(elapsedSeconds);
+      await _startForeground(
+        elapsedSeconds,
+        notifTitle: notifTitle,
+        notifFinishLabel: notifFinishLabel,
+      );
     }
     if (overlay && context.mounted) {
-      await _showOverlay(context);
+      await _showOverlay(context, overlayContent: overlayContent);
       fow.FlutterOverlayWindow.shareData({'elapsed': elapsedSeconds});
     }
   }
@@ -128,18 +134,22 @@ class NursingSessionService {
 
   // ---- foreground ----
 
-  Future<void> _startForeground(int elapsedSeconds) async {
+  Future<void> _startForeground(
+    int elapsedSeconds, {
+    required String notifTitle,
+    required String notifFinishLabel,
+  }) async {
     await FlutterForegroundTask.saveData(key: 'elapsed', value: elapsedSeconds);
     if (await FlutterForegroundTask.isRunningService) {
       await FlutterForegroundTask.restartService();
     } else {
       await FlutterForegroundTask.startService(
         serviceId: 1001,
-        notificationTitle: 'Nursing in progress',
+        notificationTitle: notifTitle,
         notificationText: '00:00',
         callback: startForegroundCallback,
         notificationButtons: [
-          const NotificationButton(id: 'finish', text: 'Finish'),
+          NotificationButton(id: 'finish', text: notifFinishLabel),
         ],
       );
     }
@@ -153,7 +163,10 @@ class NursingSessionService {
 
   // ---- overlay ----
 
-  Future<void> _showOverlay(BuildContext context) async {
+  Future<void> _showOverlay(
+    BuildContext context, {
+    required String overlayContent,
+  }) async {
     final granted = await fow.FlutterOverlayWindow.isPermissionGranted();
     if (!granted) {
       final result = await fow.FlutterOverlayWindow.requestPermission();
@@ -166,7 +179,7 @@ class NursingSessionService {
         alignment: fow.OverlayAlignment.topCenter,
         flag: fow.OverlayFlag.defaultFlag,
         overlayTitle: 'Nursing Pulse',
-        overlayContent: 'Nursing session in progress',
+        overlayContent: overlayContent,
         visibility: fow.NotificationVisibility.visibilitySecret,
         enableDrag: true,
         positionGravity: fow.PositionGravity.none,

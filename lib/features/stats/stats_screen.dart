@@ -75,13 +75,8 @@ class StatsScreenState extends State<StatsScreen> {
     return _dailyTotalMinutes / _todaySessions.length;
   }
 
-  String _timeLabel(DateTime dt) {
-    final h = dt.hour;
-    final m = dt.minute.toString().padLeft(2, '0');
-    final period = h >= 12 ? 'PM' : 'AM';
-    final hour = h % 12 == 0 ? 12 : h % 12;
-    return '$hour:$m $period';
-  }
+  String _timeLabel(DateTime dt) =>
+      TimeOfDay.fromDateTime(dt).format(context);
 
   String _sideLabel(NursingSide side) {
     final l10n = AppLocalizations.of(context);
@@ -465,7 +460,7 @@ class _SessionHistoryCardState extends State<_SessionHistoryCard> {
                       TextButton(
                         onPressed: () => setState(() => _limit += _pageSize),
                         child: Text(
-                          'Show ${remaining.clamp(0, _pageSize)} more',
+                          AppLocalizations.of(context).statsShowMore(remaining.clamp(0, _pageSize)),
                           style: Theme.of(context).textTheme.labelLarge?.copyWith(
                                 color: AppColors.primary,
                               ),

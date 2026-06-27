@@ -156,9 +156,8 @@ class _NursingHistoryChartState extends State<NursingHistoryChart> {
   String _dayLabel(DateTime d) => '${d.day}/${d.month}';
 
   String _monthLabel(DateTime d) {
-    const months = ['Jan','Feb','Mar','Apr','May','Jun',
-                    'Jul','Aug','Sep','Oct','Nov','Dec'];
-    return months[d.month - 1];
+    final fmt = MaterialLocalizations.of(context);
+    return fmt.formatMonthYear(d).split(' ').first;
   }
 
   // Label step: show every Nth label so they don't overlap

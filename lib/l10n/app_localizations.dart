@@ -160,7 +160,7 @@ abstract class AppLocalizations {
   /// **'{hours}:{remainingMinutes} ago • {side} • {duration} min'**
   String lastNursingHourAgo(
     int hours,
-    int remainingMinutes,
+    String remainingMinutes,
     String side,
     int duration,
   );
@@ -776,6 +776,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{months} {months, plural, =1{month} other{months}} old'**
   String monthsOld(int months);
+
+  /// No description provided for @nextFeedOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Feed time has passed'**
+  String get nextFeedOverdue;
+
+  /// No description provided for @statsShowMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count} more'**
+  String statsShowMore(int count);
+
+  /// No description provided for @notifNursingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nursing in progress'**
+  String get notifNursingTitle;
+
+  /// No description provided for @notifNursingFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get notifNursingFinish;
+
+  /// No description provided for @overlayNursingContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Nursing session in progress'**
+  String get overlayNursingContent;
+
+  /// No description provided for @weightUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get weightUnit;
 }
 
 class _AppLocalizationsDelegate

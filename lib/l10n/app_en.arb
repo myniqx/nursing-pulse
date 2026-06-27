@@ -28,7 +28,7 @@
   "@lastNursingHourAgo": {
     "placeholders": {
       "hours": { "type": "int" },
-      "remainingMinutes": { "type": "int" },
+      "remainingMinutes": { "type": "String" },
       "side": { "type": "String" },
       "duration": { "type": "int" }
     }
@@ -213,5 +213,17 @@
     "placeholders": {
       "months": { "type": "int" }
     }
-  }
+  },
+
+  "nextFeedOverdue": "Feed time has passed",
+  "statsShowMore": "Show {count} more",
+  "@statsShowMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "notifNursingTitle": "Nursing in progress",
+  "notifNursingFinish": "Finish",
+  "overlayNursingContent": "Nursing session in progress",
+  "weightUnit": "kg"
 }

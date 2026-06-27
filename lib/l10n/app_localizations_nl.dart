@@ -42,7 +42,7 @@ class AppLocalizationsNl extends AppLocalizations {
   @override
   String lastNursingHourAgo(
     int hours,
-    int remainingMinutes,
+    String remainingMinutes,
     String side,
     int duration,
   ) {
@@ -403,4 +403,24 @@ class AppLocalizationsNl extends AppLocalizations {
     );
     return '$months $_temp0 oud';
   }
+
+  @override
+  String get nextFeedOverdue => 'Voedingstijd is voorbij';
+
+  @override
+  String statsShowMore(int count) {
+    return '$count meer tonen';
+  }
+
+  @override
+  String get notifNursingTitle => 'Voeding bezig';
+
+  @override
+  String get notifNursingFinish => 'Stoppen';
+
+  @override
+  String get overlayNursingContent => 'Voedingssessie bezig';
+
+  @override
+  String get weightUnit => 'kg';
 }
