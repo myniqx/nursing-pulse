@@ -11,7 +11,7 @@
   "lastNursingNoSessions": "Henüz kayıt yok",
   "lastNursingAgo": "{time} önce • {side}",
   "lastNursingMinAgo": "{minutes} dakika önce • {side} • {duration} dk",
-  "lastNursingHourAgo": "{hours} {hours, plural, =1{saat} other{saat}} önce • {side} • {duration} dk",
+  "lastNursingHourAgo": "{hours}:{remainingMinutes} önce • {side} • {duration} dk",
 
   "sideLeft": "Sol",
   "sideRight": "Sağ",

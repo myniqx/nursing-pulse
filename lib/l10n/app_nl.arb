@@ -11,7 +11,7 @@
   "lastNursingNoSessions": "Nog geen sessies",
   "lastNursingAgo": "{time} geleden • {side}",
   "lastNursingMinAgo": "{minutes} min geleden • {side} • {duration} min",
-  "lastNursingHourAgo": "{hours} {hours, plural, =1{uur} other{uur}} geleden • {side} • {duration} min",
+  "lastNursingHourAgo": "{hours}:{remainingMinutes} geleden • {side} • {duration} min",
 
   "sideLeft": "Links",
   "sideRight": "Rechts",

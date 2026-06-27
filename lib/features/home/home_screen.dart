@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (ago.inMinutes < 60) {
       return l10n.lastNursingMinAgo(ago.inMinutes, side, duration);
     }
-    return l10n.lastNursingHourAgo(ago.inHours, side, duration);
+    return l10n.lastNursingHourAgo(ago.inHours, ago.inMinutes % 60, side, duration);
   }
 
   String? _nextFeedSuggestion(AppLocalizations l10n) {

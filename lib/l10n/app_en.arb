@@ -24,10 +24,11 @@
       "duration": { "type": "int" }
     }
   },
-  "lastNursingHourAgo": "{hours} {hours, plural, =1{hour} other{hours}} ago • {side} • {duration} min",
+  "lastNursingHourAgo": "{hours}:{remainingMinutes} ago • {side} • {duration} min",
   "@lastNursingHourAgo": {
     "placeholders": {
       "hours": { "type": "int" },
+      "remainingMinutes": { "type": "int" },
       "side": { "type": "String" },
       "duration": { "type": "int" }
     }

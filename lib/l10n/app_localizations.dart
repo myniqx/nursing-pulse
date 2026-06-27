@@ -157,8 +157,13 @@ abstract class AppLocalizations {
   /// No description provided for @lastNursingHourAgo.
   ///
   /// In en, this message translates to:
-  /// **'{hours} {hours, plural, =1{hour} other{hours}} ago • {side} • {duration} min'**
-  String lastNursingHourAgo(int hours, String side, int duration);
+  /// **'{hours}:{remainingMinutes} ago • {side} • {duration} min'**
+  String lastNursingHourAgo(
+    int hours,
+    int remainingMinutes,
+    String side,
+    int duration,
+  );
 
   /// No description provided for @sideLeft.
   ///

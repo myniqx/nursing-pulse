@@ -40,14 +40,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String lastNursingHourAgo(int hours, String side, int duration) {
-    String _temp0 = intl.Intl.pluralLogic(
-      hours,
-      locale: localeName,
-      other: 'hours',
-      one: 'hour',
-    );
-    return '$hours $_temp0 ago • $side • $duration min';
+  String lastNursingHourAgo(
+    int hours,
+    int remainingMinutes,
+    String side,
+    int duration,
+  ) {
+    return '$hours:$remainingMinutes ago • $side • $duration min';
   }
 
   @override
